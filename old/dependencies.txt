@@ -1,0 +1,9 @@
+pip install numpy
+pip install tensorflow
+pip install opencv-python
+pip install pandas
+pip install keras
+
+pip install mido
+pip install Pillow
+pip install python-rtmidi
