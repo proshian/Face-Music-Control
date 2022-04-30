@@ -5,13 +5,13 @@ from functools import partial
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QLabel
+from PyQt5.QtGui import QIcon
 
 __version__ = "0.1"
 __author__ = "Garri Proshian"
@@ -47,10 +47,27 @@ class FmcUi(QMainWindow):
         self.image_label.resize(1, 40)
         self.image_label.setStyleSheet("background-color: lightgreen")
 
-        self.values_layout = QVBoxLayout()
+        self._create_values_layout(["happy", "sad"])
 
-        self.play_mode_layout.addWidget(self.image_label)
-        self.play_mode_layout.addLayout(self.values_layout)
+        self.play_mode_layout.addWidget(
+            self.image_label, self.left_right_proportion[0])
+        self.play_mode_layout.addLayout(
+            self.values_layout, self.left_right_proportion[1])
+
+    def _create_values_layout(self, names):
+        self.values_layout = QVBoxLayout()
+        for name in names:
+            label = QLabel(name)
+            label.setStyleSheet("background-color: blue")
+            self.values_layout.addWidget(label, 1)
+        settings_button_container = QWidget()
+        settings_button = QPushButton()
+        settings_button.setGeometry(200, 150, 100, 40)
+        settings_button.setIcon(QIcon('emojis/settings.svg'))
+        self.values_layout.addWidget(settings_button_container, 4)
+        self.values_layout.addWidget(settings_button)
+        
+                
 
     def resizeEvent(self, event):
         """
@@ -69,8 +86,9 @@ class FmcUi(QMainWindow):
         layout = QHBoxLayout()
     
     
-    left_width = 40
-    right_width = 40
+    #left_width = 40
+    #right_width = 40
+    left_right_proportion = (5,1)
 
     _initial_size = (860, 620)
 
