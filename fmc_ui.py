@@ -14,6 +14,8 @@ from PyQt5.QtWidgets import (
 
 from PyQt5.QtGui import QIcon
 
+#from camera import Camera
+
 __version__ = "0.1"
 __author__ = "Garri Proshian"
 
@@ -22,7 +24,7 @@ __author__ = "Garri Proshian"
 # Create a subclass of QMainWindow to setup the FMC GUI
 class FmcUi(QMainWindow):
 
-    def __init__(self, sensors, cc_sender):
+    def __init__(self, sensors, cc_sender, controller = None):
         super().__init__()
         
         
@@ -46,9 +48,11 @@ class FmcUi(QMainWindow):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         
-        # временная заглушка
-        self.playmode_loop = lambda: None #print("timer")
-
+        if controller == None:
+            self.playmode_loop = lambda x: None #print("timer")
+        else:
+            controller.set_image_label(self.image_label)
+            self.playmode_loop = controller.loop
         self.timer = QTimer()
         self.timer.timeout.connect(self.playmode_loop)
         
