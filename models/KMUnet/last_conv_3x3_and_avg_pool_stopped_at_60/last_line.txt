@@ -1,0 +1,1 @@
+19s 43ms/step - loss: 0.6508 - accuracy: 0.7583 - val_loss: 1.3325 - val_accuracy: 0.6049

@@ -1,28 +1,21 @@
 import sys
-import os
 
 from PyQt5.QtWidgets import QApplication
 
+from sensor import Sensor
 from fmc_ui import FmcUi
-from value_getter import ValueGetter
+from rand_sens import rand_sens
+from fer_sens import fer_sens
+from cc_sender import CcSender
+
+
 
 def main():
-    icons_dir = 'emojis/'
-    emotions = ["happy", "sad", "angry", "neutral", "surprised"]
-    emotions_icons = [os.path.join(icons_dir, f"{emotion}.svg") for emotion in emotions]
-    print(emotions_icons)
-    FER_nn_dict = {
-        "names": emotions,
-        "icons": emotions_icons}
-    """
-    FER_nn = ValueGetter( 
-        emotions, icon_locations, getter,
-        min_possible, max_possible, bias)
-    """
-
     fmc = QApplication(sys.argv)
-    # Show the calculator's GUI
-    view = FmcUi([FER_nn_dict])
+    fmc.setStyle('Fusion')
+    
+    cc_sender = CcSender(Sensor.all_sensors)
+    view = FmcUi(Sensor.all_sensors, cc_sender)
     view.show()
     sys.exit(fmc.exec_())
 
