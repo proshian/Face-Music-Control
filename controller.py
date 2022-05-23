@@ -15,13 +15,14 @@ class Controller():
         self.camera = camera
         self.cc_sender = cc_sender
         self.image_label = image_label
-        self.sendors = sensors
+        self.sensors = sensors
         self.reources = reources
     
     def set_image_label(self, image_label):
         self.image_label = image_label
 
     def loop(self):
-        self.camera.update_cur_data()
+        for resource in self.reources:
+            resource.update_cur_data()
         cvImg = self.camera.get_cur_data()
         self.image_label.setPixmap(np_RGB_to_QPixmap(cvImg))
