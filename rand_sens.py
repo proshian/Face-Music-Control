@@ -10,7 +10,7 @@ def get_3_rand_vals(names):
 
 def create_random_vg():
     names = ["rand 1", "rand 2", "rand 3"]
-    icon_locations = [os.path.join("numbers", f"{num}.svg") for num in range(1,4)]
+    icon_locations = [os.path.join("icons","numbers", f"{num}.svg") for num in range(1,4)]
 
     rand_sens = Sensor( 
         names, icon_locations,

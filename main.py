@@ -12,17 +12,27 @@ from resource import Resource
 from camera import Camera
 
 def main():
-    fmc = QApplication(sys.argv)
-    fmc.setStyle('Fusion')
-    
-    cc_sender = CcSender(Sensor.all_sensors)
-
     camera = Camera()
 
     fer_sens = FerSensor(emotions, emotions_icons, camera, 0, 1, KMU_dir)
 
+    # ! Следует реализовать окно, возникающее, если нет доступных MIDI портов.
+    # Это приложение, проверяющее раз в 50 миллисекунд, что порт появился.
+    # Как только порт появляется, данное окно закрывается и открывается FMC.
+    cc_sender = CcSender(Sensor.all_sensors)
+    
     controller = Controller(
         camera, cc_sender, Sensor.all_sensors, Resource.all_resources)
+
+    fmc = QApplication(sys.argv)
+    fmc.setStyle('Fusion')
+
+    """
+    palette = QPalette()
+    palette.setColor(QPalette.Window, Qt.white)
+    palette.setColor(QPalette.Button, QColor(255, 255, 255))
+    fmc.setPalette(palette)
+    """
 
     view = FmcUi(Sensor.all_sensors, cc_sender, controller)
     view.show()

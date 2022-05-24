@@ -113,7 +113,7 @@ class FmcUi(QMainWindow):
 
         # settings_button.setGeometry(200, 150, 100, 40)
         #settings_button.setFixedSize(QSize(60, 60))
-        settings_button.setIcon(QIcon('emojis/settings.svg'))
+        settings_button.setIcon(QIcon('icons/emojis/settings.svg'))
         settings_button.setIconSize(QSize(50,50))
         settings_button.setFixedSize(QSize(60,60))
         settings_button.clicked.connect(self.turn_on_settings_mode)
@@ -173,7 +173,7 @@ class FmcUi(QMainWindow):
 
         play_button = QPushButton()
 
-        play_button.setIcon(QIcon('emojis/play.svg'))
+        play_button.setIcon(QIcon('icons/emojis/play.svg'))
         play_button.setIconSize(QSize(50,50))
         play_button.setFixedSize(QSize(60,60))
         play_button.clicked.connect(self.turn_on_play_mode)        
