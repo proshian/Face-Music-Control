@@ -19,3 +19,7 @@ class Camera(Resource):
             self.cur_data = self.falsy_data
         orig_img = cv2.cvtColor(orig_img_bgr, cv2.COLOR_BGR2RGB)
         self.cur_data = orig_img
+
+    @property
+    def visualization(self):
+        return self.cur_data

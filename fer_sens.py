@@ -1,5 +1,6 @@
 import os
 
+import cv2
 from tensorflow.keras.models import model_from_json 
 
 from sensor import SensorWithVisual
@@ -17,6 +18,7 @@ class FerSensor(SensorWithVisual):
         super().__init__(names, icon_locations,
                          resource, min_possible, max_possible)
         self._model = FerSensor._load_nn(dir_, model_name, weights_name)
+        self._face_detector = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
 
     def get_results(self):
         return self._model.predict()

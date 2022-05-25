@@ -28,7 +28,6 @@ class Sensor(ABC):
     @abstractmethod
     def get_results(self):
         pass
-    
 
 class SensorWithVisual(Sensor):
     def __init__(self, names, icon_locations,
@@ -36,3 +35,12 @@ class SensorWithVisual(Sensor):
         super().__init__(names, icon_locations,
                          resource, min_possible, max_possible)
         self.visualization = None
+
+"""
+class SensorWithVisual(Sensor):
+    def __init__(self, names, icon_locations,
+                 resource, min_possible, max_possible):
+        super().__init__(names, icon_locations,
+                         resource, min_possible, max_possible)
+        self.visualization = None
+"""

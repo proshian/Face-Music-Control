@@ -48,19 +48,21 @@ class FmcUi(QMainWindow):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         
-        if controller == None:
-            self.playmode_loop = lambda x: None #print("timer")
-        else:
-            controller.set_image_label(self.image_label)
-            self.playmode_loop = controller.loop
         self.timer = QTimer()
-        self.timer.timeout.connect(self.playmode_loop)
         
 
         self.turn_on_play_mode()
 
     
-
+    def set_controller(self, controller):
+        """
+        Предполагается, что будет вызвана единожды.
+        Если пользователь будет использовать этот метод, неоднократно
+        стоит проверять, есть ли связанные с событием timeout функции
+        и дисконнектить их так: self.timer.timeout.disconnect(self.playmode_loop)
+        """
+        self.playmode_loop = controller.loop
+        self.timer.timeout.connect(self.playmode_loop)
 
     def _create_play_mode_widget(self):
         self.play_mode_widget = QWidget()
