@@ -12,6 +12,18 @@ class Vizualizer():
         qpixmap = QPixmap(qImg)
         return qpixmap
     
+    def alpha_compose(background, foreground):
+        alpha_background = background[:,:,3] / 255.0
+        alpha_foreground = foreground[:,:,3] / 255.0
+
+        # set adjusted colors
+        for color in range(0, 3):
+            background[:,:,color] = alpha_foreground * foreground[:,:,color] + \
+                alpha_background * background[:,:,color] * (1 - alpha_foreground)
+
+        # set adjusted alpha and denormalize back to 0-255
+        background[:,:,3] = (1 - (1 - alpha_foreground) * (1 - alpha_background)) * 255
+
     # ! Реализовать эту функцию
     def _overlay(lower_, upper_):
         #cv2.addWeighted(lower_,1.0,upper_,1.0,1)
@@ -20,12 +32,12 @@ class Vizualizer():
     def _gather_visualization(self):
         visualization = self._source_list[0].visualization
         for source in self._source_list[1:]:
-            visualization = Vizualizer._overlay(
-                visualization, source.visualization)
+            Vizualizer.alpha_compose(visualization, source.visualization)
         return visualization
     
     def visualize(self):
         visualization = self._gather_visualization()
+        visualization = cv2.cvtColor(visualization, cv2.COLOR_RGBA2RGB)
         qpixmap = Vizualizer._np_RGB_to_QPixmap(visualization)
         self._img_qlabel.setPixmap(qpixmap)
 

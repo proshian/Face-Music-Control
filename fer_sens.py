@@ -21,6 +21,9 @@ class FerSensor(SensorWithVisual):
                          resource, min_possible, max_possible)
         self._model = FerSensor._load_nn(dir_, model_name, weights_name)
         self._face_detector = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
+        n_channels = 4
+        self.visualization = np.zeros(
+            self.resource.visualization.shape, dtype=np.uint8)
 
     def get_results(self):
         return self._model.predict()
@@ -29,19 +32,36 @@ class FerSensor(SensorWithVisual):
         _,_,w,h = rect
         return w*h
 
-    def detection_visualize(orig_img, coords):
-        (x,y,w,h) = coords
-        cv2.rectangle(orig_img,(x,y),(x+w,y+h),(114,106,106),thickness=4)
+    def init_viz_with_detection(self, img_width_and_height, face_coords):
+        (x,y,w,h) = face_coords
+        n_channels = 4
+        transparent_img = np.zeros(
+            (*img_width_and_height, n_channels), dtype=np.uint8)
+
+        transparent_img[:,:,3] = np.ones(
+            img_width_and_height, dtype=np.uint8) * 100
+        
+        transparent_img[y:y+h, x:x+w, 3] = np.zeros(
+            (w, h), dtype=np.uint8)
+
+        cv2.rectangle(transparent_img,(x,y),(x+w,y+h),(114,106,106, 255),thickness=4)
 
         font_height = 20
         font_padding = 3
 
+        
+
         # создадим контур и заливку рамки для текста
         cv2.rectangle(
-            orig_img,(x,y),(x+w,y-font_height-font_padding * 2),(114,106,106),thickness=-1)
+            transparent_img,(x,y),(x+w,y-font_height-font_padding * 2),
+            (114,106,106, 255),thickness=-1)
         
         cv2.rectangle(
-            orig_img,(x,y),(x+w,y-font_height-font_padding * 2),(114,106,106),thickness=4)
+            transparent_img,(x,y),(x+w,y-font_height-font_padding * 2),
+            (114,106,106, 255),thickness=4)
+
+        
+        self.visualization = transparent_img
 
         """
         # Наложим поверх найденного лица полупрозрачную маску:
@@ -57,7 +77,6 @@ class FerSensor(SensorWithVisual):
         # 4) Перезапишим участок с лицом на "приглушенную версию"
         orig_img[y:y+h, x:x+w] = res
         """
-        return orig_img
 
     def preprocess(self, cam_img):
         all_faces_rects = self._face_detector.detectMultiScale(cam_img, 1.32, 5)
@@ -92,39 +111,42 @@ class FerSensor(SensorWithVisual):
 
 
 
-
-        n_channels = 4
         """
+        n_channels = 4
+        
         transparent_img = np.zeros(
             (cam_img.shape[0], cam_img.shape[1], n_channels), dtype=np.uint8)
         """
         
+        """
         transparent_img = np.ones(
             (cam_img.shape[0], cam_img.shape[1], n_channels), dtype=np.uint8)
         transparent_img *= 255
+        
+        
         transparent_img[:,:,3] = np.zeros(
             (cam_img.shape[0], cam_img.shape[1]), dtype=np.uint8)
-
-        """
-        FerSensor.detection_visualize(
-            transparent_img, largest_face_rect)
         """
         
+        """
+        transparent_img = FerSensor.detection_visualize(
+            cam_img, largest_face_rect)
 
-        cv2.rectangle(transparent_img,(x,y),(x+w,y+h),(114,106,106,255),thickness=4)
         cv2.imshow('trans', transparent_img)
 
         orig_con = np.copy(cam_img)
         orig_con = cv2.cvtColor(orig_con, cv2.COLOR_RGB2RGBA)
 
-
-        orig_con[transparent_img[:,:,3] != 0] = transparent_img[transparent_img[:,:,3] != 0]
+        # orig_con[transparent_img[:,:,3] != 0] = transparent_img[transparent_img[:,:,3] != 0]
+        alpha_compose(orig_con, transparent_img)
         cv2.imshow('orig_con', orig_con)
 
         viz = FerSensor.detection_visualize(
             np.copy(cam_img), largest_face_rect)
         cv2.imshow('f', viz)
+        """
 
+        self.init_viz_with_detection(cam_img.shape[:2], largest_face_rect)
 
         return nn_input
     
@@ -146,3 +168,16 @@ fer_sens = FerSensor(
     emotions, emotions_icons,
     load_nn(KMU_dir).predict, 0, 1)
 """
+
+
+def alpha_compose(background, foreground):
+    alpha_background = background[:,:,3] / 255.0
+    alpha_foreground = foreground[:,:,3] / 255.0
+
+    # set adjusted colors
+    for color in range(0, 3):
+        background[:,:,color] = alpha_foreground * foreground[:,:,color] + \
+            alpha_background * background[:,:,color] * (1 - alpha_foreground)
+
+    # set adjusted alpha and denormalize back to 0-255
+    background[:,:,3] = (1 - (1 - alpha_foreground) * (1 - alpha_background)) * 255

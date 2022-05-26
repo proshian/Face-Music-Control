@@ -22,4 +22,4 @@ class Camera(Resource):
 
     @property
     def visualization(self):
-        return self.cur_data
+        return cv2.cvtColor(self.cur_data, cv2.COLOR_RGB2RGBA)
