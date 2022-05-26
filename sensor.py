@@ -19,7 +19,7 @@ class Sensor(ABC):
         Sensor.all_sensors.append(self)
 
     def acquire_raw(self):
-        return self.resource.get_data()
+        return self.resource.get_cur_data()
 
     @abstractmethod
     def preprocess(delf):

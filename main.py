@@ -17,7 +17,6 @@ def main():
 
     fer_sens = FerSensor(emotions, emotions_icons, camera, 0, 1, KMU_dir)
 
-
     # ! Следует реализовать окно, возникающее, если нет доступных MIDI портов.
     # Это приложение, проверяющее раз в 50 миллисекунд, что порт появился.
     # Как только порт появляется, данное окно закрывается и открывается FMC.
@@ -44,7 +43,10 @@ def main():
         [camera_vizualizer], cc_sender,
         Sensor.all_sensors, Resource.all_resources)
     
-    #view.set_controller(controller)
+    view.set_controller(controller)
+
+    d = fer_sens.acquire_raw()
+    fer_sens.preprocess(d)
 
     view.show()
     sys.exit(fmc.exec_())

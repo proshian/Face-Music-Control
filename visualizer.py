@@ -22,7 +22,7 @@ class Vizualizer():
             visualization = Vizualizer._overlay(
                 visualization, source.visualization)
         return visualization
-
+    
     def visualize(self):
         visualization = self._gather_visualization()
         qpixmap = Vizualizer._np_RGB_to_QPixmap(visualization)

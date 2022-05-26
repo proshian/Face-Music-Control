@@ -10,6 +10,9 @@ class Controller():
     def loop(self):
         for resource in self.reources:
             resource.update_cur_data()
+        for sensor in self.sensors:
+            raw_data = sensor.acquire_raw() 
+            sensor.preprocess(raw_data)
         for vizualizer in self.viz_list:
             vizualizer.visualize()
 

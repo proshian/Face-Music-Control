@@ -2,8 +2,11 @@ import os
 
 import cv2
 from tensorflow.keras.models import model_from_json 
+from tensorflow.keras.preprocessing.image import img_to_array
 
 from sensor import SensorWithVisual
+
+
 
 
 class FerSensor(SensorWithVisual):
@@ -23,11 +26,38 @@ class FerSensor(SensorWithVisual):
     def get_results(self):
         return self._model.predict()
         
+    def _get_rect_area(rect):
+        _,_,w,h = rect
+        return w*h
 
-    def preprocess(self):
-        pass
 
-    
+    def preprocess(self, cam_img):
+        all_faces_rects = self._face_detector.detectMultiScale(cam_img, 1.32, 5)
+        #for (x,y,w,h) in faces_detected:
+        print(f"all rects {all_faces_rects}")
+        if len(all_faces_rects) == 0:
+            return
+        largest_face_rect = max(all_faces_rects, key=FerSensor._get_rect_area)
+        print(f"largest_using_max: {largest_face_rect}")
+        (x,y,w,h) = largest_face_rect
+        
+        
+        face_img = cam_img[y:y+h, x:x+w]
+        # cv2.imshow('f', face_img)
+        gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
+        # cv2.imshow('f', gray_face_img)
+        cut_gray_face =cv2.resize(gray_face_img,(48,48))
+        # cv2.imshow('f', cv2.resize(cut_gray_face,(200,200)))
+        #print(f"shape: {cut_gray_face.shape}")
+        #print(f"type: {type(cut_gray_face)}")
+        #print(cut_gray_face)
+
+        # добавляет канал в конец. Те размерность (48, 48, 1)
+        ar = img_to_array(cut_gray_face)
+        
+        #print(f"ar shape: {ar.shape}")
+        #print(f"ar type: {type(ar)}")
+        #print(ar)
     
     def _load_nn(dir_, model_name = 'fer.json', weights_name = 'fer.h5'):
         # загрузим модель
