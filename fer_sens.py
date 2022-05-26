@@ -33,6 +33,7 @@ class FerSensor(SensorWithVisual):
         return w*h
 
     def init_viz_with_detection(self, img_width_and_height, face_coords):
+        # я затмняю фон, но можно засветлять квадрат с лицом или вообще ничего не делать
         (x,y,w,h) = face_coords
         n_channels = 4
         transparent_img = np.zeros(
@@ -63,25 +64,15 @@ class FerSensor(SensorWithVisual):
         
         self.visualization = transparent_img
 
-        """
-        # Наложим поверх найденного лица полупрозрачную маску:
-        # 1) Запишем часть, содержащую лицо в паеременную sub_img
-        sub_img = orig_img[y:y+h, x:x+w]
 
-        # 2) Создадим белый квадрат такого же размера, как sub_img
-        white_rect = np.ones(sub_img.shape, dtype=np.uint8) * 255
-
-        # 3) Сложим лицо с белым квадратом с коффицинтами 0.9 и 0.1
-        res = cv2.addWeighted(sub_img, 0.85, white_rect, 0.15, 1.0)
-
-        # 4) Перезапишим участок с лицом на "приглушенную версию"
-        orig_img[y:y+h, x:x+w] = res
-        """
 
     def preprocess(self, cam_img):
         all_faces_rects = self._face_detector.detectMultiScale(cam_img, 1.32, 5)
 
         if len(all_faces_rects) == 0:
+            # сбросим визуализацию. Иначе будет рендериться старая рамка
+            self.visualization = np.zeros(
+                self.resource.visualization.shape, dtype=np.uint8)
             return None
         
         # Для распознавания используется самое большое лицо:
@@ -108,43 +99,6 @@ class FerSensor(SensorWithVisual):
         # (1, 48, 48, 1) 
         nn_input = np.expand_dims(nn_input, axis = 0)
 
-
-
-
-        """
-        n_channels = 4
-        
-        transparent_img = np.zeros(
-            (cam_img.shape[0], cam_img.shape[1], n_channels), dtype=np.uint8)
-        """
-        
-        """
-        transparent_img = np.ones(
-            (cam_img.shape[0], cam_img.shape[1], n_channels), dtype=np.uint8)
-        transparent_img *= 255
-        
-        
-        transparent_img[:,:,3] = np.zeros(
-            (cam_img.shape[0], cam_img.shape[1]), dtype=np.uint8)
-        """
-        
-        """
-        transparent_img = FerSensor.detection_visualize(
-            cam_img, largest_face_rect)
-
-        cv2.imshow('trans', transparent_img)
-
-        orig_con = np.copy(cam_img)
-        orig_con = cv2.cvtColor(orig_con, cv2.COLOR_RGB2RGBA)
-
-        # orig_con[transparent_img[:,:,3] != 0] = transparent_img[transparent_img[:,:,3] != 0]
-        alpha_compose(orig_con, transparent_img)
-        cv2.imshow('orig_con', orig_con)
-
-        viz = FerSensor.detection_visualize(
-            np.copy(cam_img), largest_face_rect)
-        cv2.imshow('f', viz)
-        """
 
         self.init_viz_with_detection(cam_img.shape[:2], largest_face_rect)
 
