@@ -40,7 +40,7 @@ class CcSender:
         return round((el-min_) / (max_-min_) * CcSender.max_midi_cc)
 
 
-    def _preprocess_senssor_data(self, sensor_id, data):
+    def _preprocess_sensor_data(self, sensor_id, data):
         min_max = self.min_max[sensor_id]
         prep_data = [
             CcSender._preprocess_el(d, min_max['min'], min_max['max'])
@@ -50,7 +50,7 @@ class CcSender:
 
 
     def send(self, sensor_id, data, channel_ = 3):
-        p_data = self._preprocess_all_data(self, sensor_id, data)
+        p_data = self._preprocess_sensor_data(sensor_id, data)
         for index, value_ in enumerate(p_data, self.biases[sensor_id]):
             message = mido.Message(
                 'control_change', channel = channel_, 

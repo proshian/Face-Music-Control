@@ -22,11 +22,11 @@ class Sensor(ABC):
         return self.resource.get_cur_data()
 
     @abstractmethod
-    def preprocess(delf):
+    def preprocess(self, raw_data):
         pass
     
     @abstractmethod
-    def get_results(self):
+    def get_results(self, prep_data):
         pass
 
 class SensorWithVisual(Sensor):

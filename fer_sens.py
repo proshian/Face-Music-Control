@@ -2,7 +2,6 @@ import os
 
 import cv2
 from tensorflow.keras.models import model_from_json 
-# ! удалить # from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 
 from sensor import SensorWithVisual
@@ -25,8 +24,7 @@ class FerSensor(SensorWithVisual):
         self.visualization = np.zeros(
             self.resource.visualization.shape, dtype=np.uint8)
 
-    def get_results(self):
-        return self._model.predict()
+    
         
     def _get_rect_area(rect):
         _,_,w,h = rect
@@ -64,7 +62,11 @@ class FerSensor(SensorWithVisual):
         
         self.visualization = transparent_img
 
-
+    def get_results(self, input):
+        results = self._model.predict(input)[0]
+        for index, result in enumerate(results):
+            print(f"{self.names[index]}: {result}")
+        return results
 
     def preprocess(self, cam_img):
         all_faces_rects = self._face_detector.detectMultiScale(cam_img, 1.32, 5)
@@ -85,10 +87,6 @@ class FerSensor(SensorWithVisual):
         face_img = cam_img[y:y+h, x:x+w]
         gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
         cut_gray_face =cv2.resize(gray_face_img,(48,48))
-
-        # ! Два комментария ниже убрать
-        # добавляет канал в конец. Те размерность (48, 48, 1)
-        # ar = img_to_array(cut_gray_face)
 
         cut_gray_face_normed = cut_gray_face / 255
 
@@ -113,15 +111,11 @@ class FerSensor(SensorWithVisual):
 
 
 icons_dir = 'icons/emojis/'
-emotions = ["happy", "sad", "angry", "neutral", "surprised"]
+# emotions = ["happy", "sad", "angry", "neutral", "surprised"]
+emotions = ["angry", "disgusted", "fearful", "happy", "sad", "surprised", "neutral"]
 emotions_icons = [os.path.join(icons_dir, f"{emotion}.svg") for emotion in emotions]
 KMU_dir = 'models/KMUnet/KmuNet_drop_0.5/'
 
-"""
-fer_sens = FerSensor( 
-    emotions, emotions_icons,
-    load_nn(KMU_dir).predict, 0, 1)
-"""
 
 
 def alpha_compose(background, foreground):
