@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QImage, QPixmap
-
+import cv2
 class Vizualizer():
     def __init__(self, source_list, img_qlabel):
         self._img_qlabel = img_qlabel
@@ -14,6 +14,7 @@ class Vizualizer():
     
     # ! Реализовать эту функцию
     def _overlay(lower_, upper_):
+        #cv2.addWeighted(lower_,1.0,upper_,1.0,1)
         return lower_
 
     def _gather_visualization(self):

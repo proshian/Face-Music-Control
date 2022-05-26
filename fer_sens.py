@@ -2,11 +2,10 @@ import os
 
 import cv2
 from tensorflow.keras.models import model_from_json 
-from tensorflow.keras.preprocessing.image import img_to_array
+# ! удалить # from tensorflow.keras.preprocessing.image import img_to_array
+import numpy as np
 
 from sensor import SensorWithVisual
-
-
 
 
 class FerSensor(SensorWithVisual):
@@ -33,31 +32,47 @@ class FerSensor(SensorWithVisual):
 
     def preprocess(self, cam_img):
         all_faces_rects = self._face_detector.detectMultiScale(cam_img, 1.32, 5)
-        #for (x,y,w,h) in faces_detected:
-        print(f"all rects {all_faces_rects}")
+
         if len(all_faces_rects) == 0:
-            return
+            return None
+        
+        # Для распознавания используется самое большое лицо:
+        # предполагается, что польователь будет находиться ближе всех к камере
         largest_face_rect = max(all_faces_rects, key=FerSensor._get_rect_area)
-        print(f"largest_using_max: {largest_face_rect}")
+        
         (x,y,w,h) = largest_face_rect
         
-        
-        face_img = cam_img[y:y+h, x:x+w]
         # cv2.imshow('f', face_img)
+        face_img = cam_img[y:y+h, x:x+w]
         gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
-        # cv2.imshow('f', gray_face_img)
         cut_gray_face =cv2.resize(gray_face_img,(48,48))
-        # cv2.imshow('f', cv2.resize(cut_gray_face,(200,200)))
-        #print(f"shape: {cut_gray_face.shape}")
-        #print(f"type: {type(cut_gray_face)}")
-        #print(cut_gray_face)
 
+        # ! Два комментария ниже убрать
         # добавляет канал в конец. Те размерность (48, 48, 1)
-        ar = img_to_array(cut_gray_face)
+        # ar = img_to_array(cut_gray_face)
+
+        cut_gray_face_normed = cut_gray_face / 255
+
+        # добавляем размерность, отвечющую за число каналов. (48, 48, 1)
+        nn_input = np.expand_dims(cut_gray_face_normed, axis = 2)
+
+        # добавляем размерность, отвечющую за число элементов батча.
+        # (1, 48, 48, 1) 
+        nn_input = np.expand_dims(nn_input, axis = 0)
+
+        print(nn_input.shape)
+
+        chan_num = 4
+        transparent_img = np.zeros(
+            (cam_img.shape[0], cam_img.shape[1], chan_num), dtype=np.uint8)
         
-        #print(f"ar shape: {ar.shape}")
-        #print(f"ar type: {type(ar)}")
-        #print(ar)
+        # выделим рамкой участок с лицом, который обработает модель
+        rect_color = (114,106,106)
+        cv2.rectangle(transparent_img,(x,y),(x+w,y+h),rect_color,thickness=4)
+
+        self.visualization = transparent_img
+
+        return nn_input
     
     def _load_nn(dir_, model_name = 'fer.json', weights_name = 'fer.h5'):
         # загрузим модель
