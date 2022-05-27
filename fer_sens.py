@@ -3,6 +3,8 @@ import os
 import cv2
 from tensorflow.keras.models import model_from_json 
 import numpy as np
+from PIL import Image, ImageFont, ImageDraw
+
 
 from sensor import SensorWithVisual
 
@@ -20,6 +22,7 @@ class FerSensor(SensorWithVisual):
                          resource, min_possible, max_possible)
         self._model = FerSensor._load_nn(dir_, model_name, weights_name)
         self._face_detector = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
+        self._face_coords = None
         n_channels = 4
         self.visualization = np.zeros(
             self.resource.visualization.shape, dtype=np.uint8)
@@ -48,8 +51,6 @@ class FerSensor(SensorWithVisual):
         font_height = 20
         font_padding = 3
 
-        
-
         # создадим контур и заливку рамки для текста
         cv2.rectangle(
             transparent_img,(x,y),(x+w,y-font_height-font_padding * 2),
@@ -59,13 +60,31 @@ class FerSensor(SensorWithVisual):
             transparent_img,(x,y),(x+w,y-font_height-font_padding * 2),
             (114,106,106, 255),thickness=4)
 
-        
         self.visualization = transparent_img
+
+
+    def visualize_prediction(self, results):
+        font_height = 20
+        font_padding = 3
+
+        (x,y,_,_) = self._face_coords
+
+        max_index = np.argmax(results)  # номер наиболее вероятной эмоции
+    
+        predicted_emotion = self.names[max_index]  # наиболее вероятная эмоция        
+        font = ImageFont.truetype("arial.ttf", font_height)
+        img_pil = Image.fromarray(self.visualization)
+        draw = ImageDraw.Draw(img_pil)
+        draw.text(
+            (int(x + font_padding), int(y - font_height - font_padding)),
+            f"{predicted_emotion}  {results[max_index]*100:.0f}%",
+            font = font, fill = (255, 255, 255, 255))
+        self.visualization = np.array(img_pil)
+
 
     def get_results(self, input):
         results = self._model.predict(input)[0]
-        for index, result in enumerate(results):
-            print(f"{self.names[index]}: {result}")
+        self.visualize_prediction(results)
         return results
 
     def preprocess(self, cam_img):
@@ -80,7 +99,7 @@ class FerSensor(SensorWithVisual):
         # Для распознавания используется самое большое лицо:
         # предполагается, что польователь будет находиться ближе всех к камере
         largest_face_rect = max(all_faces_rects, key=FerSensor._get_rect_area)
-        
+        self._face_coords = largest_face_rect 
         (x,y,w,h) = largest_face_rect
         
         # cv2.imshow('f', face_img)
@@ -115,7 +134,6 @@ icons_dir = 'icons/emojis/'
 emotions = ["angry", "disgusted", "fearful", "happy", "sad", "surprised", "neutral"]
 emotions_icons = [os.path.join(icons_dir, f"{emotion}.svg") for emotion in emotions]
 KMU_dir = 'models/KMUnet/KmuNet_drop_0.5/'
-
 
 
 def alpha_compose(background, foreground):

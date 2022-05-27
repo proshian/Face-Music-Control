@@ -40,8 +40,8 @@ def main():
     camera_vizualizer = Vizualizer([camera, fer_sens], view.image_label)
 
     controller = Controller(
-        [camera_vizualizer], cc_sender,
-        Sensor.all_sensors, Resource.all_resources)
+        [camera_vizualizer], cc_sender, Sensor.all_sensors,
+        Resource.all_resources, view)
     
     view.set_controller(controller)
 

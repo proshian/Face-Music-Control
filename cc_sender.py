@@ -55,7 +55,7 @@ class CcSender:
             message = mido.Message(
                 'control_change', channel = channel_, 
                 control = index, value = value_)
-            print(message)
+            # print(message)
             self.port.send(message)
     
 

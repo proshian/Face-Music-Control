@@ -129,7 +129,9 @@ class FmcUi(QMainWindow):
 
         self.values_layout.addLayout(line)
 
-        
+    def _update_labels(self, sensor_id, results):
+        for i, result in enumerate(results):
+            self.labels[sensor_id][i]['value'].setNum(round(float(result),2))
 
     def _create_settings_widget(self, cc_sender):
         self.settings_widget = QWidget()
@@ -167,7 +169,7 @@ class FmcUi(QMainWindow):
                 button.setIconSize(QSize(50,50))
                 button.setFixedSize(QSize(60,60))
                 button.clicked.connect(
-                    partial(cc_sender.learn, sensor.id, index))
+                    partial(cc_sender.learn, sensor_id = sensor.id, index = index))
 
                 emoji_buttons_layout.addWidget(button, 1, alignment= Qt.AlignHCenter)
 

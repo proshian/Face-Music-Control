@@ -1,9 +1,10 @@
 class Controller():
-    def __init__(self, viz_list, cc_sender, sensors, reources):
+    def __init__(self, viz_list, cc_sender, sensors, reources, ui):
         self.viz_list = viz_list
         self.cc_sender = cc_sender
         self.sensors = sensors
         self.reources = reources
+        self.ui = ui
     
     
 
@@ -19,6 +20,6 @@ class Controller():
                 break
             results = sensor.get_results(input_data)
             self.cc_sender.send(sensor.id, results)
-            # ui.change_labels(sensor.id, results)
+            self.ui._update_labels(sensor.id, results)
         for vizualizer in self.viz_list:
             vizualizer.visualize()
