@@ -1,0 +1,7 @@
+ShadowButton{
+    border: 0px;
+    background-color: white;
+    height: 100px;
+    width: 100px;
+    border-radius: 8px;
+}

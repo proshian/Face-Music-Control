@@ -23,7 +23,6 @@ class FerSensor(SensorWithVisual):
         self._model = FerSensor._load_nn(dir_, model_name, weights_name)
         self._face_detector = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
         self._face_coords = None
-        n_channels = 4
         self.visualization = np.zeros(
             self.resource.visualization.shape, dtype=np.uint8)
 
@@ -33,20 +32,28 @@ class FerSensor(SensorWithVisual):
         _,_,w,h = rect
         return w*h
 
-    def init_viz_with_detection(self, img_width_and_height, face_coords):
-        # я затмняю фон, но можно засветлять квадрат с лицом или вообще ничего не делать
-        (x,y,w,h) = face_coords
+    def get_dark_overlay(img_width_and_height):
         n_channels = 4
         transparent_img = np.zeros(
             (*img_width_and_height, n_channels), dtype=np.uint8)
-
         transparent_img[:,:,3] = np.ones(
-            img_width_and_height, dtype=np.uint8) * 100
+            img_width_and_height, dtype=np.uint8) * 80
+        return transparent_img 
+
+    def init_viz_with_detection(self, img_width_and_height, face_coords):
+        # Затемняю фон. Также можно рассмотреть:
+        #     * засветление квадрата с лицом
+        #     * отсутствие затемнения или засветления
+        transparent_img = FerSensor.get_dark_overlay(img_width_and_height) 
         
+        (x,y,w,h) = face_coords
+        
+        # Сделаем участок с лицом прозрачным
         transparent_img[y:y+h, x:x+w, 3] = np.zeros(
             (w, h), dtype=np.uint8)
 
-        cv2.rectangle(transparent_img,(x,y),(x+w,y+h),(114,106,106, 255),thickness=4)
+        cv2.rectangle(
+            transparent_img,(x,y),(x+w,y+h),(114,106,106, 255),thickness=4)
 
         font_height = 20
         font_padding = 3
@@ -92,8 +99,12 @@ class FerSensor(SensorWithVisual):
 
         if len(all_faces_rects) == 0:
             # сбросим визуализацию. Иначе будет рендериться старая рамка
-            self.visualization = np.zeros(
-                self.resource.visualization.shape, dtype=np.uint8)
+            # self.visualization = np.zeros(
+            #     self.resource.visualization.shape, dtype=np.uint8)
+
+            # решил, что лучше затемнять весь кадр
+            self.visualization = FerSensor.get_dark_overlay(
+                self.resource.visualization.shape[:2])
             return None
         
         # Для распознавания используется самое большое лицо:
