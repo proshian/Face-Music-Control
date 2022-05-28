@@ -37,7 +37,13 @@ class FerSensor(SensorWithVisual):
         transparent_img = np.zeros(
             (*img_width_and_height, n_channels), dtype=np.uint8)
         transparent_img[:,:,3] = np.ones(
-            img_width_and_height, dtype=np.uint8) * 80
+            img_width_and_height, dtype=np.uint8) * 91
+        transparent_img[:,:,0] = np.ones(
+            img_width_and_height, dtype=np.uint8) * 19
+        transparent_img[:,:,1] = np.ones(
+            img_width_and_height, dtype=np.uint8) * 20
+        transparent_img[:,:,2] = np.ones(
+            img_width_and_height, dtype=np.uint8) * 22
         return transparent_img 
 
     def init_viz_with_detection(self, img_width_and_height, face_coords):
@@ -48,24 +54,26 @@ class FerSensor(SensorWithVisual):
         
         (x,y,w,h) = face_coords
         
+        face_frame_color = (23, 33, 43, 255)
+
         # Сделаем участок с лицом прозрачным
         transparent_img[y:y+h, x:x+w, 3] = np.zeros(
             (w, h), dtype=np.uint8)
 
         cv2.rectangle(
-            transparent_img,(x,y),(x+w,y+h),(114,106,106, 255),thickness=4)
+            transparent_img, (x,y), (x+w,y+h), face_frame_color, thickness=4)
 
         font_height = 20
         font_padding = 3
 
         # создадим контур и заливку рамки для текста
         cv2.rectangle(
-            transparent_img,(x,y),(x+w,y-font_height-font_padding * 2),
-            (114,106,106, 255),thickness=-1)
+            transparent_img, (x,y), (x + w, y - font_height - font_padding*2),
+            face_frame_color, thickness=-1)
         
         cv2.rectangle(
-            transparent_img,(x,y),(x+w,y-font_height-font_padding * 2),
-            (114,106,106, 255),thickness=4)
+            transparent_img, (x,y), (x + w, y - font_height - font_padding*2),
+            face_frame_color, thickness=4)
 
         self.visualization = transparent_img
 
