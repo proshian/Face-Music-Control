@@ -172,7 +172,7 @@ class FmcUi(QMainWindow):
 
     def _update_labels(self, sensor_id, results):
         for i, result in enumerate(results):
-            self.labels[sensor_id][i]['value'].setNum(round(float(result),2))
+            self.labels[sensor_id][i]['value'].setText(f"{result:.2f}")
 
     def _create_settings_widget(self, cc_sender):
         self.settings_widget = QWidget()
@@ -228,8 +228,6 @@ class FmcUi(QMainWindow):
         
 
         
-   
-
     def resizeEvent(self, event):
         return
         # ниже закомментирована моя попытка

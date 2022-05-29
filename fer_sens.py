@@ -5,7 +5,6 @@ from tensorflow.keras.models import model_from_json
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 
-
 from sensor import SensorWithVisual
 
 
@@ -153,16 +152,3 @@ icons_dir = 'icons/emojis/'
 emotions = ["angry", "disgusted", "fearful", "happy", "sad", "surprised", "neutral"]
 emotions_icons = [os.path.join(icons_dir, f"{emotion}.svg") for emotion in emotions]
 KMU_dir = 'models/KMUnet/KmuNet_drop_0.5/'
-
-
-def alpha_compose(background, foreground):
-    alpha_background = background[:,:,3] / 255.0
-    alpha_foreground = foreground[:,:,3] / 255.0
-
-    # set adjusted colors
-    for color in range(0, 3):
-        background[:,:,color] = alpha_foreground * foreground[:,:,color] + \
-            alpha_background * background[:,:,color] * (1 - alpha_foreground)
-
-    # set adjusted alpha and denormalize back to 0-255
-    background[:,:,3] = (1 - (1 - alpha_foreground) * (1 - alpha_background)) * 255
