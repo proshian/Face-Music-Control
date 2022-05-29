@@ -11,6 +11,8 @@ class ShadowButton(QPushButton):
         self.create_and_set_shadow()
         self.enterEvent = self.create_and_set_big_shadow
         self.leaveEvent = self.create_and_set_shadow
+        self.pressed.connect(self.create_and_set_active_shadow)
+        self.released.connect(self.create_and_set_big_shadow)
         
 
     def create_and_set_shadow(self, event = None):
@@ -28,3 +30,12 @@ class ShadowButton(QPushButton):
         big_shadow.setYOffset(0)
         big_shadow.setColor(QColor(QRgba64.fromRgba(0, 0, 0, 77)))
         self.setGraphicsEffect(big_shadow)
+
+    def create_and_set_active_shadow(self, event = None):
+        big_shadow = QGraphicsDropShadowEffect()
+        big_shadow.setBlurRadius(16)
+        big_shadow.setXOffset(0)
+        big_shadow.setYOffset(0)
+        big_shadow.setColor(QColor(QRgba64.fromRgba(0, 128, 244, 240)))
+        self.setGraphicsEffect(big_shadow)
+        

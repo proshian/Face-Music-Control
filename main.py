@@ -27,6 +27,12 @@ def main():
     fmc = QApplication(sys.argv)
     fmc.setStyle('Fusion')
 
+    file = open("style.qss",'r')
+
+    with file:
+        qss = file.read()
+        fmc.setStyleSheet(qss)
+
     
     """
     palette = QPalette()
