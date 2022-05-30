@@ -49,6 +49,8 @@ def main():
 
     view = FmcUi(Sensor.all_sensors, cc_sender)
 
+    camera.set_label(view.image_label)
+
     camera_vizualizer = Vizualizer([camera, fer_sens], view.image_label)
 
     controller = Controller(

@@ -1,14 +1,16 @@
 import mido
+from sensor import Sensor
 
 class CcSender:
     """
     Протестировать модуль отдельно => ввести в программу
     """
 
-    def __init__(self, sensors, port = None):
+    def __init__(self, sensors: list[Sensor], port = None) -> None:
         if port == None:
             port_name = mido.get_output_names()[-1]
             port = mido.open_output(port_name)
+            # port: mido.backends.rtmidi.Output
             print("ATTENTION! CcSender opened port"
                   f"with name: {port_name} as a default port")
         self.port = port
@@ -21,7 +23,7 @@ class CcSender:
              'max': sensor.max_possible} for sensor in sensors}
                 
     
-    def _set_biases(self, sensors):
+    def _set_biases(self, sensors: list[Sensor]) -> None:
         next_bias = 0
         for sensor in sensors:
             self.biases[sensor.id] = next_bias

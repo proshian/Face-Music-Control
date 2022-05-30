@@ -5,8 +5,8 @@ class Resource(ABC):
     id_iterator = itertools.count()
 
     all_resources = []
-    def __init__(self):
-        self.id = next(Resource.id_iterator)
+    def __init__(self) -> None:
+        self.id: int = next(Resource.id_iterator)
         self.cur_data = None
         # Нужно определить в наследнике falsy_data - данные,
         # сведетельствующие об ошибке
