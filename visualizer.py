@@ -1,5 +1,7 @@
 from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtCore import Qt
 import cv2
+
 class Vizualizer():
     def __init__(self, source_list, img_qlabel):
         self._img_qlabel = img_qlabel
@@ -24,11 +26,6 @@ class Vizualizer():
         # set adjusted alpha and denormalize back to 0-255
         background[:,:,3] = (1 - (1 - alpha_foreground) * (1 - alpha_background)) * 255
 
-    # ! Реализовать эту функцию
-    def _overlay(lower_, upper_):
-        #cv2.addWeighted(lower_,1.0,upper_,1.0,1)
-        return lower_
-
     def _gather_visualization(self):
         visualization = self._source_list[0].visualization
         for source in self._source_list[1:]:
@@ -39,6 +36,12 @@ class Vizualizer():
         visualization = self._gather_visualization()
         visualization = cv2.cvtColor(visualization, cv2.COLOR_RGBA2RGB)
         qpixmap = Vizualizer._np_RGB_to_QPixmap(visualization)
+        qpixmap = qpixmap.scaled(
+            self._img_qlabel.width(),
+            self._img_qlabel.height(),
+            Qt.KeepAspectRatioByExpanding)
+            # Qt.KeepAspectRatioByExpanding)
+
         self._img_qlabel.setPixmap(qpixmap)
 
             

@@ -1,11 +1,10 @@
 from functools import partial
 
 from PyQt5.QtCore import Qt, QSize, QTimer
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (
-    QGridLayout,
     QMainWindow,
     QPushButton,
-    QToolButton,
     QHBoxLayout,
     QVBoxLayout,
     QWidget,
@@ -112,8 +111,10 @@ class FmcUi(QMainWindow):
         play_mode_layout.setContentsMargins(0,0,0,0)
 
         self.image_label = QLabel()
-        self.image_label.resize(1, 40)
-        self.image_label.setStyleSheet("background-color: lightgreen")
+        self.image_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.image_label.setSizePolicy( QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored )
+        # self.image_label.resize(1, 40)
+        # self.image_label.setStyleSheet("background-color: lightgreen")
 
         self._create_values_layout()
 
@@ -271,14 +272,14 @@ class FmcUi(QMainWindow):
     # Хотелось бы, чтобы в режиме настройки приложение было всегда сверху,
     # а в режиме игры вело себя как обычное окно.
     # Смена флагов приводит к приостанвке рендеринга.
-    # Получемое мелькание раздрожает. ПОэтому временно отказываюсь от идеи.
-    def always_top(self):
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.show()
-    
-    def not_always_top(self):
-        self.setWindowFlags(self.windowFlags() ^ Qt.WindowStaysOnTopHint)
-        self.show()
+    # Получемое мелькание раздрожает. Поэтому временно отказываюсь от идеи.
+    # def always_top(self):
+    #     self.setWindowFlags(Qt.WindowStaysOnTopHint)
+    #     self.show()
+    # 
+    # def not_always_top(self):
+    #     self.setWindowFlags(self.windowFlags() ^ Qt.WindowStaysOnTopHint)
+    #     self.show()
     
     #left_width = 40
     #right_width = 40
