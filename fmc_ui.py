@@ -11,7 +11,8 @@ from PyQt5.QtWidgets import (
     QLabel,
     QStackedWidget,
 )
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFont
+import numpy as np
 
 from shadow_button import ShadowButton
 
@@ -28,11 +29,20 @@ class FmcUi(QMainWindow):
 
     def __init__(self, sensors, cc_sender, controller = None):
         super().__init__()
+
+        
+        self.regular_label_font = QFont("Roboto")
+        self.regular_label_font.setPointSizeF(9.5)
+
+        self.max_label_font = QFont("Roboto")
+        self.max_label_font.setPointSizeF(9.5)
+        self.max_label_font.setBold(True)
         
         
         self._sensors = sensors
         # self.labels: dict(int sensor_id: list(Qlabel) ) 
         self.labels = dict()
+        self.active_label_index = None
         # self.binding_buttons = dict()
         
         self._create_mode_buttons() 
@@ -47,15 +57,16 @@ class FmcUi(QMainWindow):
         self._centralWidget.addWidget(self.play_mode_widget)
         self._centralWidget.addWidget(self.settings_widget)
 
+        right_bar_color = "#E9E9ED"
+        self._centralWidget.setStyleSheet(f"background-color: {right_bar_color}")
+
         self.setWindowTitle("Face Music Control")
         self.resize(*self._initial_size)
 
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
-
         
         self.timer = QTimer()
         
-
         self.turn_on_play_mode()
 
     def _create_mode_buttons(self):
@@ -136,16 +147,20 @@ class FmcUi(QMainWindow):
         self.values_layout.setContentsMargins(0,28,0,0)
         self.values_layout.setSpacing(14)
 
+        
+
         for sensor in self._sensors: 
             sensor_labels = []
             # Возможно, буду использовать здесь иконки
             # for name, _ in zip(sensor.names, sensor.icon_locations):
             for name in sensor.names:
                 label = QLabel(f"{name}:")
+                label.setFont(self.regular_label_font)
                 #label.setStyleSheet("background-color: blue")
                 label.setAlignment(Qt.AlignRight | Qt.AlignVCenter) 
 
                 value = QLabel("none")
+                value.setFont(self.regular_label_font)
                 #value.setStyleSheet("background-color: red")
                 value.setAlignment(Qt.AlignLeft | Qt.AlignVCenter) 
                 
@@ -172,6 +187,19 @@ class FmcUi(QMainWindow):
        
 
     def _update_labels(self, sensor_id, results):
+        if self.active_label_index is not None:
+            self.labels[sensor_id][self.active_label_index]['value'].setFont(
+                self.regular_label_font)
+            self.labels[sensor_id][self.active_label_index]['label'].setFont(
+                self.regular_label_font)
+        
+        self.active_label_index = np.argmax(results)
+
+        self.labels[sensor_id][self.active_label_index]['value'].setFont(
+            self.max_label_font)
+        self.labels[sensor_id][self.active_label_index]['label'].setFont(
+            self.max_label_font)
+
         for i, result in enumerate(results):
             self.labels[sensor_id][i]['value'].setText(f"{result:.2f}")
 
@@ -184,8 +212,8 @@ class FmcUi(QMainWindow):
         settings_layout.setContentsMargins(0,0,0,0)
 
         temp_placeholder = QLabel()
-        temp_placeholder.resize(1, 40)
-        temp_placeholder.setStyleSheet("background-color: cyan")
+        # temp_placeholder.resize(1, 40)
+        temp_placeholder.setStyleSheet("background-color: white")
         temp_placeholder.setContentsMargins(0,0,0,0)
 
         self._create_buttons_layout(cc_sender)
@@ -215,13 +243,13 @@ class FmcUi(QMainWindow):
             # for _, icon in zip(sensor.names, sensor.icon_locations):
             for index, icon in enumerate(sensor.icon_locations):
                 button = ShadowButton()
+                button.setStyleSheet("background-color: white")
                 button.setIcon(QIcon(icon))
-                button.setIconSize(QSize(54,54))
+                button.setIconSize(QSize(57,57))
                 button.setFixedSize(QSize(60,60))
                 button.clicked.connect(
                     partial(cc_sender.learn, sensor_id = sensor.id, index = index))
 
-                # emoji_buttons_layout.addWidget(button, 1, alignment= Qt.AlignHCenter)
                 emoji_buttons_layout.addWidget(button, 1, alignment= Qt.AlignHCenter)
 
         self.buttons_layout.addLayout(emoji_buttons_layout)

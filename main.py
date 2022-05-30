@@ -1,6 +1,7 @@
 import sys
 
 from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtGui
 
 from sensor import Sensor
 from fmc_ui import FmcUi
@@ -25,6 +26,11 @@ def main():
     
 
     fmc = QApplication(sys.argv)
+    
+    QtGui.QFontDatabase.addApplicationFont('./Roboto/Roboto-Regular.ttf')
+    QtGui.QFontDatabase.addApplicationFont('./Roboto/Roboto-Medium.ttf')
+    QtGui.QFontDatabase.addApplicationFont('./Roboto/Roboto-Bold.ttf')
+
     fmc.setStyle('Fusion')
 
     file = open("style.qss",'r')

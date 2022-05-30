@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><defs><style>.cls-1{fill:none;stroke:#352929;stroke-linecap:round;stroke-miterlimit:10;stroke-width:4px;}.cls-1,.cls-2{opacity:0.7;}.cls-2{fill:#352929;}</style></defs><g id="neutral-2" data-name="neutral"><line id="neutral-3" data-name="neutral" class="cls-1" x1="25.78" y1="57.94" x2="54.22" y2="57.94"/><g id="eyes"><circle class="cls-2" cx="23.82" cy="27.48" r="4.01"/><circle class="cls-2" cx="56.18" cy="27.48" r="4.01"/></g></g></svg>
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M19.3351 43.4551H40.6651" stroke="#5D7082" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"/>
+<path d="M17.865 23.6175C19.526 23.6175 20.8725 22.271 20.8725 20.61C20.8725 18.949 19.526 17.6025 17.865 17.6025C16.204 17.6025 14.8575 18.949 14.8575 20.61C14.8575 22.271 16.204 23.6175 17.865 23.6175Z" fill="#5D7082"/>
+<path d="M42.1351 23.6175C43.7961 23.6175 45.1426 22.271 45.1426 20.61C45.1426 18.949 43.7961 17.6025 42.1351 17.6025C40.4741 17.6025 39.1276 18.949 39.1276 20.61C39.1276 22.271 40.4741 23.6175 42.1351 23.6175Z" fill="#5D7082"/>
+</svg>
