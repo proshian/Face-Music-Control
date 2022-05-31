@@ -12,8 +12,11 @@ class Controller():
     
 
     def loop(self):
+        for vizualizer in self.viz_list:
+            # ! Возможно, это должно происходить не здесь.
+            # Но точно до того как в контроллере начнется обход сенсоров
+            vizualizer.update_scaling_factor()
         for resource in self.resources:
-            resource.update_scaling_factor()
             resource.update_cur_data()
         for sensor in self.sensors:
             raw_data = sensor.acquire_raw() 

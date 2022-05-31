@@ -1,6 +1,8 @@
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import Qt
 import cv2
+from PIL import Image
+import numpy as np
 
 class Vizualizer():
     def __init__(self, source_list, img_qlabel):
@@ -15,23 +17,16 @@ class Vizualizer():
         return qpixmap
     
     def alpha_compose(background, foreground):
-        # print(f"{background.shape = }")
-        # print(f"{foreground.shape = }")
-        alpha_background = background[:,:,3] / 255.0
-        alpha_foreground = foreground[:,:,3] / 255.0
-
-        # set adjusted colors
-        for color in range(0, 3):
-            background[:,:,color] = alpha_foreground * foreground[:,:,color] + \
-                alpha_background * background[:,:,color] * (1 - alpha_foreground)
-
-        # set adjusted alpha and denormalize back to 0-255
-        background[:,:,3] = (1 - (1 - alpha_foreground) * (1 - alpha_background)) * 255
+        compose = Image.alpha_composite(
+            Image.fromarray(background),
+            Image.fromarray(foreground))
+        return np.array(compose)
 
     def _gather_visualization(self):
         visualization = self._source_list[0].visualization
         for source in self._source_list[1:]:
-            Vizualizer.alpha_compose(visualization, source.visualization)
+            # ! PEP8
+            visualization = Vizualizer.alpha_compose(visualization, source.visualization)
         return visualization
     
     def visualize(self):
@@ -45,6 +40,9 @@ class Vizualizer():
             # Qt.KeepAspectRatioByExpanding)
 
         self._img_qlabel.setPixmap(qpixmap)
+
+    def update_scaling_factor(self):
+        self._source_list[0].update_scaling_factor()
 
             
 

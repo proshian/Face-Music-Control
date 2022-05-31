@@ -25,7 +25,6 @@ class FerSensor(SensorWithVisual):
         self._face_coords = None
         self.visualization = np.zeros(
             self.resource.visualization.shape, dtype=np.uint8)
-
     
         
     def _get_rect_area(rect):
@@ -33,17 +32,12 @@ class FerSensor(SensorWithVisual):
         return w*h
 
     def get_dark_overlay(img_height_and_width):
-        n_channels = 4
-        transparent_img = np.zeros(
-            (*img_height_and_width, n_channels), dtype=np.uint8)
-        transparent_img[:,:,3] = np.ones(
-            img_height_and_width, dtype=np.uint8) * 91
-        transparent_img[:,:,0] = np.ones(
-            img_height_and_width, dtype=np.uint8) * 19
-        transparent_img[:,:,1] = np.ones(
-            img_height_and_width, dtype=np.uint8) * 20
-        transparent_img[:,:,2] = np.ones(
-            img_height_and_width, dtype=np.uint8) * 22
+        rgba_color = (19, 20, 22, 91)
+        rgba_layers = []
+        for channel_val in rgba_color:
+            rgba_layers.append(
+                np.full(img_height_and_width, channel_val, dtype=np.uint8))
+        transparent_img = np.dstack(rgba_layers)
         return transparent_img 
 
     def init_viz_with_detection(self, img_height_and_width, face_coords):

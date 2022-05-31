@@ -1,13 +1,22 @@
 import mido
+import rtmidi
+
 from sensor import Sensor
+
 
 class CcSender:
     """
     Протестировать модуль отдельно => ввести в программу
     """
 
-    def __init__(self, sensors: list[Sensor], port = None) -> None:
-        if port == None:
+    def __init__(self, sensors: list[Sensor]) -> None:
+        port = rtmidi.MidiOut()
+        port_name = "Face Music Control"
+        try:
+            port.open_virtual_port(port_name)
+            print("ATTENTION! CcSender created a virtual port"
+                  f"with name: {port_name} as a default port")
+        except NotImplementedError:
             port_name = mido.get_output_names()[-1]
             port = mido.open_output(port_name)
             # port: mido.backends.rtmidi.Output

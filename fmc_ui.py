@@ -313,7 +313,7 @@ class FmcUi(QMainWindow):
     #right_width = 40
     left_right_ratio = (5,1)
 
-    playmode_loop_len = 50
+    playmode_loop_len = 42
 
     _initial_size = (820, 628)
 

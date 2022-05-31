@@ -2,7 +2,6 @@
 
 import cv2
 from PyQt5.QtWidgets import QLabel
-import numpy as np
 
 from  resource import Resource 
 
@@ -16,6 +15,18 @@ class Camera(Resource):
         self._scaling_factor = 1.0
         self.viz_shape = self.cur_data.shape[:2][::-1]
     
+    def update_cur_data(self):
+        success, orig_img_bgr = self.cap.read()                        
+        if not success:
+            # Не удалось захватить изображение
+            # Здесь нужно вернуть изображение с информацией об ошибке
+            self.cur_data = self.falsy_data
+            print("Couldn't access the camera. Do you have it? " \
+                "Is it used by another program?")
+            return
+        orig_img = cv2.cvtColor(orig_img_bgr, cv2.COLOR_BGR2RGB)
+        self.cur_data = orig_img
+
     def set_label(self, img_label: QLabel):
         self.img_label = img_label
 
@@ -40,15 +51,6 @@ class Camera(Resource):
         self._scaling_factor = scaling_factor
         self.update_viz_shape()
 
-    def update_cur_data(self):
-        success, orig_img_bgr = self.cap.read()                        
-        if not success:
-            # Не удалось захватить изображение
-            # Здесь нужно вернуть изображение с информацией об ошибке
-            self.cur_data = self.falsy_data
-        orig_img = cv2.cvtColor(orig_img_bgr, cv2.COLOR_BGR2RGB)
-        self.cur_data = orig_img
-        # print(orig_img.shape)
 
     def update_viz_shape(self):
         self.viz_shape = list(
