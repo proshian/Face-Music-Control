@@ -13,8 +13,8 @@ class Controller():
 
     def loop(self):
         for resource in self.resources:
-            resource.update_cur_data()
             resource.update_scaling_factor()
+            resource.update_cur_data()
         for sensor in self.sensors:
             raw_data = sensor.acquire_raw() 
             if raw_data is None:

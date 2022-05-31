@@ -15,6 +15,8 @@ class Vizualizer():
         return qpixmap
     
     def alpha_compose(background, foreground):
+        # print(f"{background.shape = }")
+        # print(f"{foreground.shape = }")
         alpha_background = background[:,:,3] / 255.0
         alpha_foreground = foreground[:,:,3] / 255.0
 
