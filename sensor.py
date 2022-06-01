@@ -2,6 +2,10 @@ import itertools
 from abc import ABC, abstractmethod
 
 class Sensor(ABC):
+    """
+    Метод get_results объектоы наследников Sensor возвращает массив float'ов,
+    в соответствии с которыми мы хотим управлять звучанием  
+    """
     id_iterator = itertools.count()
 
     all_sensors = []

@@ -4,19 +4,44 @@ import cv2
 from PIL import Image
 import numpy as np
 
+# Импорты ниже нудны для аннотации типов 
+from typing import Union
+from PyQt5.QtWidgets import QLabel
+from sensor import SensorWithVisual
+from resource import Resource
+
 class Vizualizer():
-    def __init__(self, source_list, img_qlabel):
+    """
+    Vizualizer принимает:
+    1. Cписок source_list источников, обладающих визуализацией.
+       Это те наследники Sensor и Resource, у которых есть поле visualization,
+       хранящее RGBA изобраднеие в виде np.ndarray. 
+       Визуализатор накладывает визуализации друг на друга и отображает
+       конечное изображение в элементе графического интерфейса img_qlabel.
+       source_list[0].vizualisation хранит самый нижний слой,
+       source_list[-1].vizualisation — самый верхний слой
+    
+    2. QLabel img_qlabel, в котором Vizualizer отрисовывает изображение,
+       полученное альфа-композицией визуализаций источников.  
+    """
+    def __init__(self, 
+                 source_list: list[Union[SensorWithVisual, Resource]],
+                 img_qlabel: QLabel) -> None:
         self._img_qlabel = img_qlabel
         self._source_list = source_list
 
-    def _np_RGB_to_QPixmap(np_RGB):
+    def _np_RGB_to_QPixmap(np_RGB: np.ndarray) -> QPixmap:
+        """
+        Приведение RGB изображения,
+        предстваленного в виде np.ndarray к QPixmap
+        """
         height, width, _ = np_RGB.shape
         bytesPerLine = 3 * width
         qImg = QImage(np_RGB.data, width, height, bytesPerLine, QImage.Format_RGB888)
         qpixmap = QPixmap(qImg)
         return qpixmap
     
-    def alpha_compose(background, foreground):
+    def alpha_compose(background: np.ndarray, foreground: np.ndarray):
         compose = Image.alpha_composite(
             Image.fromarray(background),
             Image.fromarray(foreground))

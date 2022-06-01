@@ -24,19 +24,13 @@ class SwitchButton(QPushButton):
         super().__init__(flat = True)
 
 
-# Create a subclass of QMainWindow to setup the FMC GUI
-class FmcUi(QMainWindow):
 
+class FmcUi(QMainWindow):
+    """
+    Класс главного окна Face Music Control.
+    """
     def __init__(self, sensors, cc_sender, controller = None):
         super().__init__()
-
-        
-        self.regular_label_font = QFont("Roboto")
-        self.regular_label_font.setPointSizeF(9.5)
-
-        self.max_label_font = QFont("Roboto")
-        self.max_label_font.setPointSizeF(9.5)
-        self.max_label_font.setBold(True)
         
         
         self._sensors = sensors
@@ -44,21 +38,22 @@ class FmcUi(QMainWindow):
         self.labels = dict()
         self.active_label_index = None
         # self.binding_buttons = dict()
+
+        self._set_fonts()
         
         self._create_mode_buttons() 
-
 
         self._create_play_mode_widget()
         self._create_settings_widget(cc_sender)
 
         self._centralWidget = QStackedWidget(self)
         self.setCentralWidget(self._centralWidget)
-        
-        self._centralWidget.addWidget(self.play_mode_widget)
-        self._centralWidget.addWidget(self.settings_widget)
 
         right_bar_color = "#E9E9ED"
         self._centralWidget.setStyleSheet(f"background-color: {right_bar_color}")
+        
+        self._centralWidget.addWidget(self.play_mode_widget)
+        self._centralWidget.addWidget(self.settings_widget)
 
         self.setWindowTitle("Face Music Control")
         self.resize(*self._initial_size)
@@ -69,6 +64,7 @@ class FmcUi(QMainWindow):
         
         self.turn_on_play_mode()
 
+
     def _create_mode_buttons(self):
         self.mode_buttons_bar_color = "#293A4C"
         self.active_mode_button_back_color = "#17212B"
@@ -78,20 +74,20 @@ class FmcUi(QMainWindow):
         self.active_play_mode_icon = QIcon('icons/active_playmode.svg')
 
         self.play_button = SwitchButton()
-        self.play_button.setIconSize(QSize(50,60))
-        self.play_button.setFixedSize(QSize(90,60))
+        self.play_button.setIconSize(QSize(50, 60))
+        self.play_button.setFixedSize(QSize(90, 60))
         self.play_button.clicked.connect(self.turn_on_play_mode)
-        #self.play_button.setContentsMargins(0,0,0,0)
+        # self.play_button.setContentsMargins(0,0,0,0)
 
         self.settings_button = SwitchButton()
-        self.settings_button.setIconSize(QSize(50,60))
-        self.settings_button.setFixedSize(QSize(90,60))
+        self.settings_button.setIconSize(QSize(50, 60))
+        self.settings_button.setFixedSize(QSize(90, 60))
         self.settings_button.clicked.connect(self.turn_on_settings_mode)
-        #self.settings_button.setContentsMargins(0,0,0,0)
+        # self.settings_button.setContentsMargins(0,0,0,0)
 
         self.mode_buttons_layout = QHBoxLayout()
         self.mode_buttons_layout.setSpacing(0)
-        self.mode_buttons_layout.setContentsMargins(0,0,0,0)
+        self.mode_buttons_layout.setContentsMargins(0, 0, 0, 0)
         self.mode_buttons_layout.addWidget(self.play_button)
         self.mode_buttons_layout.addWidget(self.settings_button)
 
@@ -119,19 +115,19 @@ class FmcUi(QMainWindow):
 
         play_mode_layout = QHBoxLayout()
         play_mode_layout.setSpacing(0)
-        play_mode_layout.setContentsMargins(0,0,0,0)
+        play_mode_layout.setContentsMargins(0, 0, 0, 0)
 
         self.image_label = QLabel()
         self.image_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.image_label.setSizePolicy( QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored )
-        # self.image_label.resize(1, 40)
+        self.image_label.setSizePolicy(
+            QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
         # self.image_label.setStyleSheet("background-color: lightgreen")
 
         self._create_values_layout()
 
         vals_widget = QWidget()
         vals_widget.setLayout(self.play_mode_right)
-        vals_widget.setFixedWidth(180)
+        vals_widget.setFixedWidth(self._right_width)
 
         play_mode_layout.addWidget(self.image_label)
         play_mode_layout.addWidget(vals_widget)
@@ -144,10 +140,8 @@ class FmcUi(QMainWindow):
         self.play_mode_right.setContentsMargins(0,0,0,0)
 
         self.values_layout = QVBoxLayout()
-        self.values_layout.setContentsMargins(0,28,0,0)
+        self.values_layout.setContentsMargins(0,28,0,28)
         self.values_layout.setSpacing(14)
-
-        
 
         for sensor in self._sensors: 
             sensor_labels = []
@@ -220,7 +214,7 @@ class FmcUi(QMainWindow):
 
         settings_right_widget = QWidget()
         settings_right_widget.setLayout(self.buttons_layout)
-        settings_right_widget.setFixedWidth(180)
+        settings_right_widget.setFixedWidth(self._right_width)
 
         settings_layout.addWidget(temp_placeholder)
         settings_layout.addWidget(settings_right_widget)
@@ -232,9 +226,9 @@ class FmcUi(QMainWindow):
 
     def _create_buttons_layout(self, cc_sender):
         self.buttons_layout = QVBoxLayout()
-        self.buttons_layout.setContentsMargins(0,0,0,0)
+        self.buttons_layout.setContentsMargins(0, 0, 0, 0)
         emoji_buttons_layout = QVBoxLayout()
-        emoji_buttons_layout.setContentsMargins(0,28,0,28)
+        emoji_buttons_layout.setContentsMargins(0, 28, 0, 28)
         emoji_buttons_layout.setSpacing(14)
         
 
@@ -254,24 +248,6 @@ class FmcUi(QMainWindow):
 
         self.buttons_layout.addLayout(emoji_buttons_layout)
 
-        
-
-        
-    def resizeEvent(self, event):
-        return
-        # ниже закомментирована моя попытка
-        # запретить непропорциональные изменения размеров
-
-        print("Window has been resized")
-        #w = event.size().width()
-        #h = event.size().height()
-
-        # print(f"{event.width() = }")
-        # QMainWindow.resizeEvent(self, event)
-        # width = self._centralWidget.width()
-        #print(f"{ }")
-        #self.resize(w, self.get_new_height(w))
-        # QMainWindow.resizeEvent(self, event)
 
     def turn_on_settings_mode(self):
         self._centralWidget.setCurrentWidget(self.settings_widget)
@@ -288,7 +264,7 @@ class FmcUi(QMainWindow):
     def turn_on_play_mode(self):
         self._centralWidget.setCurrentWidget(self.play_mode_widget)
         self.timer.start(self.playmode_loop_len)
-        self.values_layout.addWidget(self.mode_buttons_widget, alignment= Qt.AlignBottom)
+        self.play_mode_right.addWidget(self.mode_buttons_widget, alignment= Qt.AlignBottom)
         self.settings_button.setStyleSheet(
             f"background-color: {self.mode_buttons_bar_color}")
         self.play_button.setStyleSheet(
@@ -297,7 +273,14 @@ class FmcUi(QMainWindow):
         self.settings_button.setIcon(self.disabled_setting_mode_icon)
         # self.not_always_top()
     
-    # Хотелось бы, чтобы в режиме настройки приложение было всегда сверху,
+    def _set_fonts(self):
+        self.regular_label_font = QFont("Roboto")
+        self.regular_label_font.setPointSizeF(9.5)
+
+        self.max_label_font = QFont("Roboto")
+        self.max_label_font.setPointSizeF(9.5)
+        self.max_label_font.setBold(True)
+    # Хотелось бы, чтобы в режиме настройки окно приложения было выше всех,
     # а в режиме игры вело себя как обычное окно.
     # Смена флагов приводит к приостанвке рендеринга.
     # Получемое мелькание раздрожает. Поэтому временно отказываюсь от идеи.
@@ -309,11 +292,12 @@ class FmcUi(QMainWindow):
     #     self.setWindowFlags(self.windowFlags() ^ Qt.WindowStaysOnTopHint)
     #     self.show()
     
-    #left_width = 40
-    #right_width = 40
-    left_right_ratio = (5,1)
+    _right_width = 180
 
-    playmode_loop_len = 42
+    # Раз в 41 милисекунду соответствовало бы 24 срабатываниям в секунду.
+    # Разница между 41 и 55 не ощутима (изображение отстает одиакого),
+    # однако это в 1.4 раза меьше вычислений.
+    playmode_loop_len = 50
 
     _initial_size = (820, 628)
 

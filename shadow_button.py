@@ -6,6 +6,13 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtGui import QRgba64
 
 class ShadowButton(QPushButton):
+    """
+    Этот класс отличается от QPushButton только внешним видом.
+    Дело в том, что с помощью qss нельзя добавлять кнопкам тень,
+    так как qss основан на css 2.1. Прописывать для каждой кнопки,
+    какая тень у нее должна быть при наведении, нажатии и в обычном состоянии
+    не хотелось. Поэтому был создан класс кнопки с тенями.
+    """
     def __init__(self) -> None:
         super().__init__(flat = True)
         self.create_and_set_shadow()

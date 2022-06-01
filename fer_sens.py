@@ -11,9 +11,8 @@ from camera import Camera
 
 class FerSensor(SensorWithVisual):
     """
-    В случае FerSensor visualization - это квадратик
-    вокруг лица распознаваемого человека
-    и прямоугольник с подписью наиболее вероятной эмоции над ним
+    Метод get_results возвращает массив вероятностей семи эмоций,
+    названия которых представлены в поле names
     """
     def __init__(self, names: list[str], icon_locations: list[str],
                  resource: Camera, min_possible, max_possible, dir_: str,
@@ -23,16 +22,70 @@ class FerSensor(SensorWithVisual):
         self._model = FerSensor._load_nn(dir_, model_name, weights_name)
         self._face_detector = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
         self._face_coords = None
-        self.visualization = np.zeros(
-            self.resource.visualization.shape, dtype=np.uint8)
+
+        # В случае FerSensor visualization - это квадратик вокруг лица
+        # и прямоугольник с подписью наиболее вероятной эмоции над ним.
+        self.visualization = FerSensor.get_dark_overlay(
+            self.resource.visualization.shape)    
+
+    def get_results(self, input):
+        results = self._model.predict(input)[0]
+        self.visualize_prediction(results)
+        return results
     
-        
     def _get_rect_area(rect):
         _,_,w,h = rect
         return w*h
 
-    def get_dark_overlay(img_height_and_width):
-        rgba_color = (19, 20, 22, 91)
+    def preprocess(self, cam_img):
+        all_faces_rects = self._face_detector.detectMultiScale(cam_img, 1.32, 5)
+
+        if len(all_faces_rects) == 0:
+            # сбросим визуализацию. Иначе будет рендериться старая рамка
+            # self.visualization = np.zeros(
+            #     self.resource.visualization.shape, dtype=np.uint8)
+
+            # решил, что лучше затемнять весь кадр
+            self.visualization = FerSensor.get_dark_overlay(
+                self.resource.get_viz_shape()[::-1])
+                #self.resource.visualization.shape[:2])
+            return None
+        
+        # Для распознавания используется самое большое лицо:
+        # предполагается, что польователь будет находиться ближе всех к камере
+        largest_face_rect = max(all_faces_rects, key=FerSensor._get_rect_area)
+        self._face_coords = largest_face_rect 
+        (x,y,w,h) = largest_face_rect
+        
+        # cv2.imshow('f', face_img)
+        face_img = cam_img[y:y+h, x:x+w]
+        gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
+        cut_gray_face =cv2.resize(gray_face_img,(48,48))
+
+        cut_gray_face_normed = cut_gray_face / 255
+
+        # добавляем размерность, отвечающую за число каналов. (48, 48, 1)
+        nn_input = np.expand_dims(cut_gray_face_normed, axis = 2)
+
+        # добавляем размерность, отвечющую за число элементов батча.
+        # (1, 48, 48, 1) 
+        nn_input = np.expand_dims(nn_input, axis = 0)
+
+
+        self.init_viz_with_detection(self.resource.get_viz_shape()[::-1], largest_face_rect)
+
+        return nn_input
+    
+    def _load_nn(dir_, model_name = 'fer.json', weights_name = 'fer.h5'):
+        # загрузим модель
+        model = model_from_json(open(os.path.join(dir_, model_name), "r").read())
+        # загрузим веса
+        model.load_weights(os.path.join(dir_, weights_name))
+        return model
+    
+
+    def get_dark_overlay(img_height_and_width,
+                         rgba_color: tuple[int] = (19, 20, 22, 91)):
         rgba_layers = []
         for channel_val in rgba_color:
             rgba_layers.append(
@@ -52,8 +105,9 @@ class FerSensor(SensorWithVisual):
 
         # (x,y,w,h) = face_coords
 
-        # ! PEP8
-        s_x, s_y, s_w, s_h = [round(coord * self.resource._scaling_factor) for coord in face_coords]
+        s_x, s_y, s_w, s_h = [
+            round(coord * self.resource._scaling_factor)
+            for coord in face_coords]
 
         # print(f"{face_coords = }")
         # print(f"{transparent_img[s_y:s_y+s_h, s_x:s_x+s_w, 3].shape = }")
@@ -104,58 +158,7 @@ class FerSensor(SensorWithVisual):
             f"{predicted_emotion}  {results[max_index]*100:.0f}%",
             font = font, fill = (255, 255, 255, 255))
         self.visualization = np.array(img_pil)
-
-
-    def get_results(self, input):
-        results = self._model.predict(input)[0]
-        self.visualize_prediction(results)
-        return results
-
-    def preprocess(self, cam_img):
-        all_faces_rects = self._face_detector.detectMultiScale(cam_img, 1.32, 5)
-
-        if len(all_faces_rects) == 0:
-            # сбросим визуализацию. Иначе будет рендериться старая рамка
-            # self.visualization = np.zeros(
-            #     self.resource.visualization.shape, dtype=np.uint8)
-
-            # решил, что лучше затемнять весь кадр
-            self.visualization = FerSensor.get_dark_overlay(
-                self.resource.get_viz_shape()[::-1])
-                #self.resource.visualization.shape[:2])
-            return None
-        
-        # Для распознавания используется самое большое лицо:
-        # предполагается, что польователь будет находиться ближе всех к камере
-        largest_face_rect = max(all_faces_rects, key=FerSensor._get_rect_area)
-        self._face_coords = largest_face_rect 
-        (x,y,w,h) = largest_face_rect
-        
-        # cv2.imshow('f', face_img)
-        face_img = cam_img[y:y+h, x:x+w]
-        gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
-        cut_gray_face =cv2.resize(gray_face_img,(48,48))
-
-        cut_gray_face_normed = cut_gray_face / 255
-
-        # добавляем размерность, отвечающую за число каналов. (48, 48, 1)
-        nn_input = np.expand_dims(cut_gray_face_normed, axis = 2)
-
-        # добавляем размерность, отвечющую за число элементов батча.
-        # (1, 48, 48, 1) 
-        nn_input = np.expand_dims(nn_input, axis = 0)
-
-
-        self.init_viz_with_detection(self.resource.get_viz_shape()[::-1], largest_face_rect)
-
-        return nn_input
-    
-    def _load_nn(dir_, model_name = 'fer.json', weights_name = 'fer.h5'):
-        # загрузим модель
-        model = model_from_json(open(os.path.join(dir_, model_name), "r").read())
-        # загрузим веса
-        model.load_weights(os.path.join(dir_, weights_name))
-        return model
+        # cv2.imshow('f', self.visualization)
 
 
 icons_dir = 'icons/emojis/'

@@ -2,6 +2,13 @@ from cc_sender import CcSender
 
 
 class Controller():
+    """
+    Отвечает за взаимодействие объектов наследников Resource, Sensor,
+    объектов Visualizer и cc_sender'a.
+    
+    Это именно класс, а не просто функция, потому что допускается изменение
+    набора ресурсов, сенсорорв и визуализаторов в ходе работы программы.
+    """
     def __init__(self, viz_list, cc_sender: CcSender, sensors, resources, ui) -> None:
         self.viz_list = viz_list
         self.cc_sender = cc_sender

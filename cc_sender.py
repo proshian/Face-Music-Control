@@ -1,12 +1,13 @@
 import mido
 import rtmidi
 
+# Ниже испорты для аннотации типов
 from sensor import Sensor
-
 
 class CcSender:
     """
-    Протестировать модуль отдельно => ввести в программу
+    Отвечает за взаимодействие с виртуальным MIDI портом
+    (посылает Control CHange MIDI события).
     """
 
     def __init__(self, sensors: list[Sensor]) -> None:

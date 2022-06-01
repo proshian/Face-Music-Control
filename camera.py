@@ -3,9 +3,13 @@
 import cv2
 from PyQt5.QtWidgets import QLabel
 
-from  resource import Resource 
+from  resource import Resource
 
 class Camera(Resource):
+    """
+    Захватывает изображение из видеопотока в поле cur_data
+    и представляет доступ к этому полю.
+    """
     def __init__(self):
         super().__init__()
         self.cap = cv2.VideoCapture(0)
@@ -19,7 +23,9 @@ class Camera(Resource):
         success, orig_img_bgr = self.cap.read()                        
         if not success:
             # Не удалось захватить изображение
-            # Здесь нужно вернуть изображение с информацией об ошибке
+            # Здесь нужно вернуть изображение с информацией об ошибке.
+            # Тогда и пользователь узнает о проблеме
+            # и падать ничего точно не будет.
             self.cur_data = self.falsy_data
             print("Couldn't access the camera. Do you have it? " \
                 "Is it used by another program?")
@@ -27,7 +33,22 @@ class Camera(Resource):
         orig_img = cv2.cvtColor(orig_img_bgr, cv2.COLOR_BGR2RGB)
         self.cur_data = orig_img
 
+    @property
+    def visualization(self):
+        viz = cv2.resize(self.cur_data, self.get_viz_shape())
+        # print(f"{viz.shape}")
+        return cv2.cvtColor(viz, cv2.COLOR_RGB2RGBA)
+
+    """
+    Все методы ниже необходимы для корректного масштабирования 
+    Camera.visualization и визуализаций сенсоров, накладывющихся поверх
+    визуализации камеры.
+    """
     def set_label(self, img_label: QLabel):
+        """
+        Устанавливает в поле img_label QLabel,
+        в который Visalizer будет вносить собранное изображение.
+        """
         self.img_label = img_label
 
     def get_cur_data_wh_ratio(self) -> float:
@@ -61,8 +82,4 @@ class Camera(Resource):
         """Возвращает список [ширина, высота]"""
         return self.viz_shape
 
-    @property
-    def visualization(self):
-        viz = cv2.resize(self.cur_data, self.get_viz_shape())
-        # print(f"{viz.shape}")
-        return cv2.cvtColor(viz, cv2.COLOR_RGB2RGBA)
+    

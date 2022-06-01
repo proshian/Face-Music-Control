@@ -1,7 +1,12 @@
 import itertools
 from abc import ABC, abstractmethod
 
-class Resource(ABC):
+class Resource():
+    """
+    Предоставляет исходные данные для объектов наследников класса Sensor.
+    Умеет обновлять поле cur_data c помощью метода update_cur_data и 
+    предоставлять доступ к этому полю с помощью get_cur_data.
+    """
     id_iterator = itertools.count()
 
     all_resources = []
