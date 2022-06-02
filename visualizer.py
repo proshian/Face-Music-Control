@@ -50,8 +50,8 @@ class Vizualizer():
     def _gather_visualization(self):
         visualization = self._source_list[0].visualization
         for source in self._source_list[1:]:
-            # ! PEP8
-            visualization = Vizualizer.alpha_compose(visualization, source.visualization)
+            visualization = Vizualizer.alpha_compose(
+                visualization, source.visualization)
         return visualization
     
     def visualize(self):

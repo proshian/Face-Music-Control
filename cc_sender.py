@@ -20,7 +20,11 @@ class CcSender:
         except NotImplementedError:
             port_name = mido.get_output_names()[-1]
             port = mido.open_output(port_name)
-            # port: mido.backends.rtmidi.Output
+            # type(port) == mido.backends.rtmidi.Output # True
+
+            # if 'LoopBe' in port_name
+            # if 'loopMIDI' in 
+            
             print("ATTENTION! CcSender opened port"
                   f"with name: {port_name} as a default port")
         self.port = port
