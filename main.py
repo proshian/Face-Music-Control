@@ -7,7 +7,8 @@ from PyQt5 import QtGui
 from sensor import Sensor
 from fmc_ui import FmcUi
 #from rand_sens import rand_sens
-from fer_sens import FerSensor, KMU_dir, emotions_icons, emotions
+from fer_sens import (
+    FerSensor, emotions_icons, emotions, model_dir, model_weights_dir)
 from cc_sender import CcSender
 from controller import Controller
 from resource import Resource
@@ -39,9 +40,9 @@ def set_up_app() -> QApplication:
 def main() -> NoReturn:
     # Создадим все требующиеся объекты наследников Resource (только camera)
     camera = Camera()
-
+    
     # Создадим все требующиеся объекты наследников Sensor (только fer_sens)
-    fer_sens = FerSensor(emotions, emotions_icons, camera, 0, 1, KMU_dir)
+    fer_sens = FerSensor(emotions, emotions_icons, camera, 0, 1, model_dir, model_weights_dir)
 
     # ! Можно добавить окно, возникающее, если нет доступных MIDI портов.
     # и проверяющее раз в n миллисекунд, наличие порта.

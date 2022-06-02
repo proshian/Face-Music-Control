@@ -15,18 +15,23 @@ class FerSensor(SensorWithVisual):
     названия которых представлены в поле names
     """
     def __init__(self, names: list[str], icon_locations: list[str],
-                 resource: Camera, min_possible, max_possible, dir_: str,
-                 model_name: str = 'fer.json', weights_name: str = 'fer.h5'):
+                 resource: Camera, min_possible: float, max_possible: float,
+                 model_dir: str, weights_dir: str,
+                 model_name: str = 'fer.json',
+                 weights_name: str = 'fer.h5') -> None:
+
         super().__init__(names, icon_locations,
                          resource, min_possible, max_possible)
-        self._model = FerSensor._load_nn(dir_, model_name, weights_name)
-        self._face_detector = cv2.CascadeClassifier(r'haarcascade_frontalface_default.xml')
+        self._model = FerSensor._load_nn(
+            model_dir, weights_dir, model_name, weights_name)
+        self._face_detector = cv2.CascadeClassifier(
+            r'haarcascade_frontalface_default.xml')
         self._face_coords = None
 
         # В случае FerSensor visualization - это квадратик вокруг лица
         # и прямоугольник с подписью наиболее вероятной эмоции над ним.
         self.visualization = FerSensor.get_dark_overlay(
-            self.resource.visualization.shape)    
+            self.resource.get_viz_shape()[::-1])    
 
     def get_results(self, input):
         results = self._model.predict(input)[0]
@@ -42,13 +47,8 @@ class FerSensor(SensorWithVisual):
 
         if len(all_faces_rects) == 0:
             # сбросим визуализацию. Иначе будет рендериться старая рамка
-            # self.visualization = np.zeros(
-            #     self.resource.visualization.shape, dtype=np.uint8)
-
-            # решил, что лучше затемнять весь кадр
             self.visualization = FerSensor.get_dark_overlay(
                 self.resource.get_viz_shape()[::-1])
-                #self.resource.visualization.shape[:2])
             return None
         
         # Для распознавания используется самое большое лицо:
@@ -76,11 +76,12 @@ class FerSensor(SensorWithVisual):
 
         return nn_input
     
-    def _load_nn(dir_, model_name = 'fer.json', weights_name = 'fer.h5'):
+    def _load_nn(model_dir, weights_dir,
+                 model_name = 'fer.json', weights_name = 'fer.h5'):
         # загрузим модель
-        model = model_from_json(open(os.path.join(dir_, model_name), "r").read())
+        model = model_from_json(open(os.path.join(model_dir, model_name), "r").read())
         # загрузим веса
-        model.load_weights(os.path.join(dir_, weights_name))
+        model.load_weights(os.path.join(model_dir, weights_dir, weights_name))
         return model
     
 
@@ -95,8 +96,8 @@ class FerSensor(SensorWithVisual):
 
     def init_viz_with_detection(self, img_height_and_width, face_coords):
         # Затемняю фон. Также можно рассмотреть:
-        #     * засветление квадрата с лицом
-        #     * отсутствие затемнения или засветления
+        # * засветление квадрата с лицом
+        # * отсутствие затемнения или засветления
         transparent_img = FerSensor.get_dark_overlay(img_height_and_width)
 
         # print(f"{img_height_and_width =}")
@@ -142,12 +143,13 @@ class FerSensor(SensorWithVisual):
         font_padding_horizontal = 10
 
         # (x,y,_,_) = self._face_coords
-        # ! PEP8!
-        s_x, s_y = [round(coord * self.resource._scaling_factor) for coord in self._face_coords[:2]] 
+        s_x, s_y = [
+            round(coord * self.resource._scaling_factor)
+            for coord in self._face_coords[:2]]
 
         max_index = np.argmax(results)  # номер наиболее вероятной эмоции
     
-        predicted_emotion = self.names[max_index]  # наиболее вероятная эмоция        
+        predicted_emotion = self.names[max_index]  # наиболее вероятная эмоция    
         font = ImageFont.truetype("arial.ttf", font_height)
         img_pil = Image.fromarray(self.visualization)
         draw = ImageDraw.Draw(img_pil)
@@ -158,7 +160,7 @@ class FerSensor(SensorWithVisual):
             f"{predicted_emotion}  {results[max_index]*100:.0f}%",
             font = font, fill = (255, 255, 255, 255))
         self.visualization = np.array(img_pil)
-        # cv2.imshow('f', self.visualization)
+        # cv2.imshow('window_name', self.visualization)
 
 
 icons_dir = 'icons/emojis/'
@@ -168,4 +170,5 @@ emotions = [
 emotions_icons = [
     os.path.join(icons_dir, f"{emotion}.svg") for emotion in emotions]
 
-KMU_dir = 'models/KMUnet/KmuNet_drop_0.5_01_06_2022_18_19_not_centered/'
+model_dir = 'models/KMUnet/KmuNet_drop_0.5_01_06_2022_18_19_not_centered/'
+model_weights_dir = '1'
