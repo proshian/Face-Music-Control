@@ -34,13 +34,16 @@ class FerSensor(SensorWithVisual):
 
     def _get_face_detetctor():
         """
-        Эта функция - обертка. Она возвращает функцию detect_faces.
+        Эта функция — обертка. Она возвращает функцию detect_faces.
         Если потребуется поменять детектор, будет меняться только код
         get_face_detetctor. Таким образом, будет легче поддерживать код.
         """
         face_detector = cv2.CascadeClassifier(
             r'haarcascade_frontalface_default.xml')
         def detect_faces(img):
+            """
+            Возвращает координаты (x, y, w, h) для каждого обнаруженного лица.
+            """
             return face_detector.detectMultiScale(img, 1.32, 5)
         return detect_faces
 
@@ -94,7 +97,11 @@ class FerSensor(SensorWithVisual):
         return nn_input
 
     def preprocess(self, cam_img):
-        
+        """
+        Предобработка: от исходного изображения с камеры
+        до изображения самого большого лица,
+        подготовленного стать входом нейронной сети
+        """
         largest_face_rect = self.detect_largest_face(cam_img)
         if largest_face_rect is None:
             return None
@@ -111,6 +118,7 @@ class FerSensor(SensorWithVisual):
     
     def _load_nn(model_dir, weights_dir,
                  model_name = 'fer.json', weights_name = 'fer.h5'):
+        """Загрузка нейронной сети, распознающей эмоции."""
         # загрузим модель
         model = model_from_json(open(os.path.join(model_dir, model_name), "r").read())
         # загрузим веса
@@ -118,8 +126,12 @@ class FerSensor(SensorWithVisual):
         return model
     
 
-    def get_dark_overlay(img_height_and_width,
-                         rgba_color: tuple[int] = None):
+    def get_dark_overlay(img_height_and_width: tuple(int),
+                         rgba_color: tuple[int] = None) -> np.ndarray:
+        """
+        Получение RGBA изображения размером img_height_and_width
+        в виде np.ndarray с затемнением цвета rgba_color.
+        """
         if rgba_color is None:
             rgba_color = FerSensor.vis_colors['dark_overlay']
         rgba_layers = []
@@ -130,6 +142,10 @@ class FerSensor(SensorWithVisual):
         return dark_overlay 
 
     def init_viz_with_detection(self, img_height_and_width, face_coords):
+        """
+        Инициализация визуализации в виде добавления рамочки вокруг лица,
+        поля для текста над рамочкой и затеменения всего вне рамочки.
+        """
         # Затемняю фон. Также можно рассмотреть:
         # * засветление квадрата с лицом
         # * отсутствие затемнения или засветления
@@ -172,6 +188,10 @@ class FerSensor(SensorWithVisual):
 
 
     def visualize_prediction(self, results):
+        """
+        Добавление в поле для текста на визуализации текста
+        с наиболее вероятной эмоцией и ее вероятностью.
+        """
         font_height = 20
         font_padding_vertical = 3
         font_padding_horizontal = 10
