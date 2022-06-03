@@ -24,14 +24,25 @@ class FerSensor(SensorWithVisual):
                          resource, min_possible, max_possible)
         self._model = FerSensor._load_nn(
             model_dir, weights_dir, model_name, weights_name)
-        self._face_detector = cv2.CascadeClassifier(
-            r'haarcascade_frontalface_default.xml')
+        self._detect_faces = FerSensor._get_face_detetctor()
         self._face_coords = None
 
         # В случае FerSensor visualization - это квадратик вокруг лица
         # и прямоугольник с подписью наиболее вероятной эмоции над ним.
         self.visualization = FerSensor.get_dark_overlay(
             self.resource.get_viz_shape()[::-1])    
+
+    def _get_face_detetctor():
+        """
+        Эта функция - обертка. Она возвращает функцию detect_faces.
+        Если потребуется поменять детектор, будет меняться только код
+        get_face_detetctor. Таким образом, будет легче поддерживать код.
+        """
+        face_detector = cv2.CascadeClassifier(
+            r'haarcascade_frontalface_default.xml')
+        def detect_faces(img):
+            return face_detector.detectMultiScale(img, 1.32, 5)
+        return detect_faces
 
     def get_results(self, input):
         results = self._model.predict(input)[0]
@@ -52,7 +63,7 @@ class FerSensor(SensorWithVisual):
         #         self.resource.get_viz_shape()[::-1])
         # return None
 
-        all_faces_rects = self._face_detector.detectMultiScale(img, 1.32, 5)
+        all_faces_rects = self._detect_faces(img)
 
         if len(all_faces_rects) == 0:
             # сбросим визуализацию. Иначе будет рендериться старая рамка
