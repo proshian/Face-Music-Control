@@ -82,5 +82,3 @@ class Camera(Resource):
     def get_viz_shape(self) -> list[int]:
         """Возвращает список [ширина, высота]"""
         return self.viz_shape
-
-    

@@ -126,7 +126,7 @@ class FerSensor(SensorWithVisual):
         return model
     
 
-    def get_dark_overlay(img_height_and_width: tuple(int),
+    def get_dark_overlay(img_height_and_width: tuple[int],
                          rgba_color: tuple[int] = None) -> np.ndarray:
         """
         Получение RGBA изображения размером img_height_and_width
@@ -146,9 +146,6 @@ class FerSensor(SensorWithVisual):
         Инициализация визуализации в виде добавления рамочки вокруг лица,
         поля для текста над рамочкой и затеменения всего вне рамочки.
         """
-        # Затемняю фон. Также можно рассмотреть:
-        # * засветление квадрата с лицом
-        # * отсутствие затемнения или засветления
         visualisation = FerSensor.get_dark_overlay(img_height_and_width)
 
         # print(f"{img_height_and_width =}")
@@ -168,21 +165,28 @@ class FerSensor(SensorWithVisual):
         visualisation[s_y:s_y+s_h, s_x:s_x+s_w, 3] = np.zeros(
             (s_w, s_h), dtype=np.uint8)
 
+        # Добавим рамку вокруг лица
         cv2.rectangle(
             visualisation, (s_x,s_y), (s_x+s_w,s_y+s_h),
             self.vis_colors['frame'], thickness=4)
 
         font_height = 20
-        font_padding = 3
+        font_padding_vertical = 3
 
         # создадим контур и заливку рамки для текста
         cv2.rectangle(
-            visualisation, (s_x,s_y), (s_x + s_w, s_y - font_height - font_padding*2),
-            self.vis_colors['frame'], thickness=-1)
+            visualisation,
+            (s_x,s_y),
+            (s_x + s_w, s_y - font_height - font_padding_vertical*2),
+            self.vis_colors['frame'],
+            thickness=-1,)
         
         cv2.rectangle(
-            visualisation, (s_x,s_y), (s_x + s_w, s_y - font_height - font_padding*2),
-            self.vis_colors['frame'], thickness=4)
+            visualisation,
+            (s_x,s_y),
+            (s_x + s_w, s_y - font_height - font_padding_vertical*2),
+            self.vis_colors['frame'],
+            thickness=4,)
 
         self.visualization = visualisation
 
