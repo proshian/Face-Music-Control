@@ -1,0 +1,7 @@
+keras==2.8.0
+mido==1.2.10
+numpy==1.22.3
+opencv_python==4.5.5.64
+Pillow==9.1.1
+PyQt5==5.15.6
+tensorflow==2.8.0
