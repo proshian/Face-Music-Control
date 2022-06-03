@@ -7,6 +7,7 @@ from PIL import Image, ImageFont, ImageDraw
 
 from sensor import SensorWithVisual
 from camera import Camera
+from face_detector import face_detector
 
 
 class FerSensor(SensorWithVisual):
@@ -24,63 +25,20 @@ class FerSensor(SensorWithVisual):
                          resource, min_possible, max_possible)
         self._model = FerSensor._load_nn(
             model_dir, weights_dir, model_name, weights_name)
-        self._detect_faces = FerSensor._get_face_detetctor()
+        self.face_detector = face_detector
         self._face_coords = None
 
         # В случае FerSensor visualization - это квадратик вокруг лица
         # и прямоугольник с подписью наиболее вероятной эмоции над ним.
         self.visualization = FerSensor.get_dark_overlay(
-            self.resource.get_viz_shape()[::-1])    
+            self.resource.get_viz_shape()[::-1])
 
-    def _get_face_detetctor():
-        """
-        Возвращает функцию detect_faces.
-        Цель данного метода — определить интерфейс детектора.
-        Если потребуется поменять детектор, будет меняться только код
-        get_face_detetctor. Таким образом, упрощается поддержка кода.
-        """
-        face_detector = cv2.CascadeClassifier(
-            r'haarcascade_frontalface_default.xml')
-        def detect_faces(img):
-            """
-            Возвращает координаты (x, y, w, h) для каждого обнаруженного лица.
-            """
-            return face_detector.detectMultiScale(img, 1.32, 5)
-        return detect_faces
-
-    def get_results(self, input):
+    def get_results(self, input) -> list[float]:
         results = self._model.predict(input)[0]
         self.visualize_prediction(results)
         return results
-    
-    def _get_rect_area(rect):
-        _,_,w,h = rect
-        return w*h
 
-    def detect_largest_face(self, img) -> tuple[int]:
-        """
-        Возвращает координаты (x, y, w, h) самого большого лица на img.
-        """
-        # Поместив этот блок до и после детектора,
-        # можно отследить, сколько ресусов затрачивает детектор
-        # self.visualization = FerSensor.get_dark_overlay(
-        #         self.resource.get_viz_shape()[::-1])
-        # return None
-
-        all_faces_rects = self._detect_faces(img)
-
-        if len(all_faces_rects) == 0:
-            # сбросим визуализацию. Иначе будет рендериться старая рамка
-            self.visualization = FerSensor.get_dark_overlay(
-                self.resource.get_viz_shape()[::-1])
-            return None
-        
-        # Для распознавания используется самое большое лицо:
-        # предполагается, что польователь будет находиться ближе всех к камере
-        largest_face_rect = max(all_faces_rects, key=FerSensor._get_rect_area)
-        return largest_face_rect
-
-    def face_img_to_nn_input(face_img):
+    def face_img_to_nn_input(face_img: np.ndarray) -> list[float]:
         """
         Подготовка изображения лица к формату входных данных нейронной сети
         """
@@ -103,8 +61,12 @@ class FerSensor(SensorWithVisual):
         до изображения самого большого лица,
         подготовленного стать входом нейронной сети
         """
-        largest_face_rect = self.detect_largest_face(cam_img)
+        # Для распознавания используется самое большое лицо:
+        # предполагается, что польователь будет находиться ближе всех к камере
+        largest_face_rect = self.face_detector.detect_largest_face(cam_img)
         if largest_face_rect is None:
+            self.visualization = FerSensor.get_dark_overlay(
+                self.resource.get_viz_shape()[::-1])    
             return None
 
         (x,y,w,h) = self._face_coords = largest_face_rect 
@@ -118,8 +80,8 @@ class FerSensor(SensorWithVisual):
 
         return nn_input
     
-    def _load_nn(model_dir, weights_dir,
-                 model_name = 'fer.json', weights_name = 'fer.h5'):
+    def _load_nn(model_dir: str, weights_dir: str,
+                 model_name: str = 'fer.json', weights_name: str = 'fer.h5'):
         """Загрузка нейронной сети, распознающей эмоции."""
         # загрузим модель
         model = model_from_json(
