@@ -20,7 +20,6 @@ class ShadowButton(QPushButton):
         self.leaveEvent = self.create_and_set_shadow
         self.pressed.connect(self.create_and_set_active_shadow)
         self.released.connect(self.create_and_set_big_shadow)
-        
 
     def create_and_set_shadow(self, event = None):
         shadow = QGraphicsDropShadowEffect()

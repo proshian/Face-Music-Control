@@ -1,5 +1,5 @@
 import mido
-import rtmidi
+# import rtmidi
 
 # Ниже испорты для аннотации типов
 from sensor import Sensor
@@ -11,23 +11,7 @@ class CcSender:
     """
 
     def __init__(self, sensors: list[Sensor]) -> None:
-        port = rtmidi.MidiOut()
-        port_name = "Face Music Control"
-        try:
-            port.open_virtual_port(port_name)
-            print("ATTENTION! CcSender created a virtual port"
-                  f"with name: {port_name} as a default port")
-        except NotImplementedError:
-            port_name = mido.get_output_names()[-1]
-            port = mido.open_output(port_name)
-            # type(port) == mido.backends.rtmidi.Output # True
-
-            # if 'LoopBe' in port_name
-            # if 'loopMIDI' in 
-            
-            print("ATTENTION! CcSender opened port"
-                  f"with name: {port_name} as a default port")
-        self.port = port
+        self.port = CcSender._init_port()
 
         self.biases = dict()
         self._set_biases(sensors)
@@ -35,8 +19,39 @@ class CcSender:
         self.min_max = {sensor.id :
             {'min': sensor.min_possible,
              'max': sensor.max_possible} for sensor in sensors}
-                
+
+
+    def _init_port():
+        try:
+            port_name = "Face Music Control"
+            port = mido.open_output(port_name, virtual=True)
+            print("ATTENTION! CcSender created a virtual port"
+                  f"with name: {port_name} as a default port")
+        except NotImplementedError:
+            port_names = mido.get_output_names()
+            if not port_names:
+                print("No ports available! Please create " \
+                      "a virtual MIDI port and restart " \
+                      "Face Music Control.",
+                      "You may want to use LoopBe1 driver or LoopMIDI.")
+            port_name = CcSender._find_existing_virt_port(port_names)
+            port = mido.open_output(port_name)
+            # type(port) == mido.backends.rtmidi.Output # True
+            
+            print("ATTENTION! CcSender opened port"
+                  f"with name: {port_name} as a default port")
+            return port
     
+    def _find_existing_virt_port(port_names: list[str]):
+        
+        common_port_name_fragments = ['LoopBe', 'loopMIDI']
+        for port_name in port_names:
+            for frag in common_port_name_fragments:
+                if frag in port_name:
+                    return port_name
+        return port_names[-1]
+        
+
     def _set_biases(self, sensors: list[Sensor]) -> None:
         next_bias = 0
         for sensor in sensors:

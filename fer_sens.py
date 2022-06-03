@@ -45,7 +45,7 @@ class FerSensor(SensorWithVisual):
     def preprocess(self, cam_img):
         """
         # Поместив этот блок до и после детектора,
-        # можно отследить сколько ресусов затрачивает детектор
+        # можно отследить, сколько ресусов затрачивает детектор
         self.visualization = FerSensor.get_dark_overlay(
                 self.resource.get_viz_shape()[::-1])
         return None
@@ -94,19 +94,21 @@ class FerSensor(SensorWithVisual):
     
 
     def get_dark_overlay(img_height_and_width,
-                         rgba_color: tuple[int] = (19, 20, 22, 91)):
+                         rgba_color: tuple[int] = None):
+        if rgba_color is None:
+            rgba_color = FerSensor.vis_colors['dark_overlay']
         rgba_layers = []
         for channel_val in rgba_color:
             rgba_layers.append(
                 np.full(img_height_and_width, channel_val, dtype=np.uint8))
-        transparent_img = np.dstack(rgba_layers)
-        return transparent_img 
+        dark_overlay = np.dstack(rgba_layers)
+        return dark_overlay 
 
     def init_viz_with_detection(self, img_height_and_width, face_coords):
         # Затемняю фон. Также можно рассмотреть:
         # * засветление квадрата с лицом
         # * отсутствие затемнения или засветления
-        transparent_img = FerSensor.get_dark_overlay(img_height_and_width)
+        visualisation = FerSensor.get_dark_overlay(img_height_and_width)
 
         # print(f"{img_height_and_width =}")
         # print(f"{(self.resource.img_label.width(), self.resource.img_label.height()) = }")
@@ -121,28 +123,27 @@ class FerSensor(SensorWithVisual):
         # print(f"{face_coords = }")
         # print(f"{transparent_img[s_y:s_y+s_h, s_x:s_x+s_w, 3].shape = }")
         
-        face_frame_color = (23, 33, 43, 255)
-
         # Сделаем участок с лицом прозрачным
-        transparent_img[s_y:s_y+s_h, s_x:s_x+s_w, 3] = np.zeros(
+        visualisation[s_y:s_y+s_h, s_x:s_x+s_w, 3] = np.zeros(
             (s_w, s_h), dtype=np.uint8)
 
         cv2.rectangle(
-            transparent_img, (s_x,s_y), (s_x+s_w,s_y+s_h), face_frame_color, thickness=4)
+            visualisation, (s_x,s_y), (s_x+s_w,s_y+s_h),
+            self.vis_colors['frame'], thickness=4)
 
         font_height = 20
         font_padding = 3
 
         # создадим контур и заливку рамки для текста
         cv2.rectangle(
-            transparent_img, (s_x,s_y), (s_x + s_w, s_y - font_height - font_padding*2),
-            face_frame_color, thickness=-1)
+            visualisation, (s_x,s_y), (s_x + s_w, s_y - font_height - font_padding*2),
+            self.vis_colors['frame'], thickness=-1)
         
         cv2.rectangle(
-            transparent_img, (s_x,s_y), (s_x + s_w, s_y - font_height - font_padding*2),
-            face_frame_color, thickness=4)
+            visualisation, (s_x,s_y), (s_x + s_w, s_y - font_height - font_padding*2),
+            self.vis_colors['frame'], thickness=4)
 
-        self.visualization = transparent_img
+        self.visualization = visualisation
 
 
     def visualize_prediction(self, results):
@@ -166,9 +167,15 @@ class FerSensor(SensorWithVisual):
         draw.text(
             text_coords,
             f"{predicted_emotion}  {results[max_index]*100:.0f}%",
-            font = font, fill = (255, 255, 255, 255))
+            font = font, fill = self.vis_colors['text'])
         self.visualization = np.array(img_pil)
         # cv2.imshow('window_name', self.visualization)
+
+
+    vis_colors = {
+        'dark_overlay': (19, 20, 22, 91),
+        'frame': (23, 33, 43, 255),
+        'text': (255, 255, 255, 255)}
 
 
 icons_dir = 'icons/emojis/'
