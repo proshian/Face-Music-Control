@@ -4,6 +4,7 @@ import mido
 # Ниже испорты для аннотации типов
 from sensor import Sensor
 
+
 class CcSender:
     """
     Отвечает за взаимодействие с виртуальным MIDI портом

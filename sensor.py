@@ -1,6 +1,7 @@
 import itertools
 from abc import ABC, abstractmethod
 
+
 class Sensor(ABC):
     """
     Метод get_results объектоы наследников Sensor возвращает массив float'ов,

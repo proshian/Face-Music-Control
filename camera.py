@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QLabel
 
 from  resource import Resource
 
+
 class Camera(Resource):
     """
     Захватывает изображение из видеопотока в поле cur_data

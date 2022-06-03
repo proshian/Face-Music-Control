@@ -16,6 +16,7 @@ import numpy as np
 
 from shadow_button import ShadowButton
 
+
 __version__ = "0.1"
 __author__ = "Garri Proshian"
 
@@ -231,19 +232,14 @@ class FmcUi(QMainWindow):
         emoji_buttons_layout.setContentsMargins(0, 28, 0, 28)
         emoji_buttons_layout.setSpacing(14)
         
-
         for sensor in self._sensors:
             # Возможно, буду использовать здесь названия 
             # for _, icon in zip(sensor.names, sensor.icon_locations):
             for index, icon in enumerate(sensor.icon_locations):
                 button = ShadowButton()
-                button.setStyleSheet("background-color: white")
                 button.setIcon(QIcon(icon))
-                button.setIconSize(QSize(57,57))
-                button.setFixedSize(QSize(60,60))
                 button.clicked.connect(
                     partial(cc_sender.learn, sensor_id = sensor.id, index = index))
-
                 emoji_buttons_layout.addWidget(button, 1, alignment= Qt.AlignHCenter)
 
         self.buttons_layout.addLayout(emoji_buttons_layout)

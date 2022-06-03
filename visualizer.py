@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QLabel
 from sensor import SensorWithVisual
 from resource import Resource
 
+
 class Vizualizer():
     """
     Vizualizer принимает:

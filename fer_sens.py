@@ -42,16 +42,17 @@ class FerSensor(SensorWithVisual):
         _,_,w,h = rect
         return w*h
 
-    def preprocess(self, cam_img):
+    def detect_largest_face(self, img) -> tuple[int]:
+        """
+        Возвращает координаты (x, y, w, h) самого большого лица на img.
         """
         # Поместив этот блок до и после детектора,
         # можно отследить, сколько ресусов затрачивает детектор
-        self.visualization = FerSensor.get_dark_overlay(
-                self.resource.get_viz_shape()[::-1])
-        return None
-        """
+        # self.visualization = FerSensor.get_dark_overlay(
+        #         self.resource.get_viz_shape()[::-1])
+        # return None
 
-        all_faces_rects = self._face_detector.detectMultiScale(cam_img, 1.32, 5)
+        all_faces_rects = self._face_detector.detectMultiScale(img, 1.32, 5)
 
         if len(all_faces_rects) == 0:
             # сбросим визуализацию. Иначе будет рендериться старая рамка
@@ -62,23 +63,36 @@ class FerSensor(SensorWithVisual):
         # Для распознавания используется самое большое лицо:
         # предполагается, что польователь будет находиться ближе всех к камере
         largest_face_rect = max(all_faces_rects, key=FerSensor._get_rect_area)
-        self._face_coords = largest_face_rect 
-        (x,y,w,h) = largest_face_rect
-        
-        # cv2.imshow('f', face_img)
-        face_img = cam_img[y:y+h, x:x+w]
-        gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
-        cut_gray_face =cv2.resize(gray_face_img,(48,48))
+        return largest_face_rect
 
-        cut_gray_face_normed = cut_gray_face / 255
+    def face_img_to_nn_input(face_img):
+        """
+        Подготовливает изображение лица к формату входных данных нейронной сети
+        """
+        gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
+        gray_face_48 =cv2.resize(gray_face_img,(48,48))
+
+        gray_face_48_normed = gray_face_48 / 255
 
         # добавляем размерность, отвечающую за число каналов. (48, 48, 1)
-        nn_input = np.expand_dims(cut_gray_face_normed, axis = 2)
+        nn_input = np.expand_dims(gray_face_48_normed, axis = 2)
 
         # добавляем размерность, отвечющую за число элементов батча.
         # (1, 48, 48, 1) 
         nn_input = np.expand_dims(nn_input, axis = 0)
+        return nn_input
 
+    def preprocess(self, cam_img):
+        
+        largest_face_rect = self.detect_largest_face(cam_img)
+        if largest_face_rect is None:
+            return None
+
+        (x,y,w,h) = self._face_coords = largest_face_rect 
+        
+        face_img = cam_img[y:y+h, x:x+w]
+
+        nn_input = FerSensor.face_img_to_nn_input(face_img)
 
         self.init_viz_with_detection(self.resource.get_viz_shape()[::-1], largest_face_rect)
 

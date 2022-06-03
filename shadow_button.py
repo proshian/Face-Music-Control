@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QColor
 from PyQt5.QtGui import QRgba64
+from PyQt5.QtCore import QSize
+
 
 class ShadowButton(QPushButton):
     """
@@ -20,6 +22,9 @@ class ShadowButton(QPushButton):
         self.leaveEvent = self.create_and_set_shadow
         self.pressed.connect(self.create_and_set_active_shadow)
         self.released.connect(self.create_and_set_big_shadow)
+        self.setIconSize(QSize(57,57))
+        self.setFixedSize(QSize(60,60))
+        self.setStyleSheet("background-color: white")
 
     def create_and_set_shadow(self, event = None):
         shadow = QGraphicsDropShadowEffect()

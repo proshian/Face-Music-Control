@@ -15,6 +15,7 @@ from resource import Resource
 from camera import Camera
 from visualizer import Vizualizer
 
+
 def set_up_app() -> QApplication:
     fmc = QApplication(sys.argv)
     

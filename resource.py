@@ -1,6 +1,7 @@
 import itertools
 from abc import ABC, abstractmethod
 
+
 class Resource():
     """
     Предоставляет исходные данные для объектов наследников класса Sensor.
