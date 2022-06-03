@@ -34,9 +34,10 @@ class FerSensor(SensorWithVisual):
 
     def _get_face_detetctor():
         """
-        Эта функция — обертка. Она возвращает функцию detect_faces.
+        Возвращает функцию detect_faces.
+        Цель данного метода — определить интерфейс детектора.
         Если потребуется поменять детектор, будет меняться только код
-        get_face_detetctor. Таким образом, будет легче поддерживать код.
+        get_face_detetctor. Таким образом, упрощается поддержка кода.
         """
         face_detector = cv2.CascadeClassifier(
             r'haarcascade_frontalface_default.xml')
@@ -81,7 +82,7 @@ class FerSensor(SensorWithVisual):
 
     def face_img_to_nn_input(face_img):
         """
-        Подготовливает изображение лица к формату входных данных нейронной сети
+        Подготовка изображения лица к формату входных данных нейронной сети
         """
         gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
         gray_face_48 =cv2.resize(gray_face_img,(48,48))
@@ -112,7 +113,8 @@ class FerSensor(SensorWithVisual):
 
         nn_input = FerSensor.face_img_to_nn_input(face_img)
 
-        self.init_viz_with_detection(self.resource.get_viz_shape()[::-1], largest_face_rect)
+        self.init_viz_with_detection(
+            self.resource.get_viz_shape()[::-1], largest_face_rect)
 
         return nn_input
     
@@ -120,7 +122,8 @@ class FerSensor(SensorWithVisual):
                  model_name = 'fer.json', weights_name = 'fer.h5'):
         """Загрузка нейронной сети, распознающей эмоции."""
         # загрузим модель
-        model = model_from_json(open(os.path.join(model_dir, model_name), "r").read())
+        model = model_from_json(
+            open(os.path.join(model_dir, model_name), "r").read())
         # загрузим веса
         model.load_weights(os.path.join(model_dir, weights_dir, weights_name))
         return model
@@ -170,21 +173,20 @@ class FerSensor(SensorWithVisual):
             visualisation, (s_x,s_y), (s_x+s_w,s_y+s_h),
             self.vis_colors['frame'], thickness=4)
 
-        font_height = 20
-        font_padding_vertical = 3
-
         # создадим контур и заливку рамки для текста
         cv2.rectangle(
             visualisation,
             (s_x,s_y),
-            (s_x + s_w, s_y - font_height - font_padding_vertical*2),
+            (s_x + s_w,
+                s_y - self.FONT_HEIGHT - self.FONT_PADDING_VERTICAL*2),
             self.vis_colors['frame'],
             thickness=-1,)
         
         cv2.rectangle(
             visualisation,
             (s_x,s_y),
-            (s_x + s_w, s_y - font_height - font_padding_vertical*2),
+            (s_x + s_w,
+                s_y - self.FONT_HEIGHT - self.FONT_PADDING_VERTICAL*2),
             self.vis_colors['frame'],
             thickness=4,)
 
@@ -196,23 +198,19 @@ class FerSensor(SensorWithVisual):
         Добавление в поле для текста на визуализации текста
         с наиболее вероятной эмоцией и ее вероятностью.
         """
-        font_height = 20
-        font_padding_vertical = 3
-        font_padding_horizontal = 10
-
-        # (x,y,_,_) = self._face_coords
         s_x, s_y = [
             round(coord * self.resource._scaling_factor)
             for coord in self._face_coords[:2]]
 
         max_index = np.argmax(results)  # номер наиболее вероятной эмоции
     
-        predicted_emotion = self.names[max_index]  # наиболее вероятная эмоция    
-        font = ImageFont.truetype("arial.ttf", font_height)
+        predicted_emotion = self.names[max_index]  # наиболее вероятная эмоция 
+        font = ImageFont.truetype("arial.ttf", self.FONT_HEIGHT)
         img_pil = Image.fromarray(self.visualization)
         draw = ImageDraw.Draw(img_pil)
-        text_coords = (int(s_x + font_padding_horizontal),
-                       int(s_y - font_height - font_padding_vertical))
+        text_coords = (
+            int(s_x + self.FONT_PADDING_HORIZONTAL),
+            int(s_y - self.FONT_HEIGHT - self.FONT_PADDING_VERTICAL))
         draw.text(
             text_coords,
             f"{predicted_emotion}  {results[max_index]*100:.0f}%",
@@ -225,6 +223,11 @@ class FerSensor(SensorWithVisual):
         'dark_overlay': (19, 20, 22, 91),
         'frame': (23, 33, 43, 255),
         'text': (255, 255, 255, 255)}
+    
+    # Параметры текста с наиболее веротяной эмоцией, помещаемого над лицом.
+    FONT_HEIGHT = 20
+    FONT_PADDING_VERTICAL = 3
+    FONT_PADDING_HORIZONTAL = 10
 
 
 icons_dir = 'icons/emojis/'
