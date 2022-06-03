@@ -173,22 +173,19 @@ class FerSensor(SensorWithVisual):
             visualisation, (s_x,s_y), (s_x+s_w,s_y+s_h),
             self.vis_colors['frame'], thickness=4)
 
-        # создадим контур и заливку рамки для текста
+        # создадим заливку рамки для текста
         cv2.rectangle(
-            visualisation,
-            (s_x,s_y),
+            visualisation, (s_x,s_y),
             (s_x + s_w,
                 s_y - self.FONT_HEIGHT - self.FONT_PADDING_VERTICAL*2),
-            self.vis_colors['frame'],
-            thickness=-1,)
+            self.vis_colors['frame'], thickness=-1,)
         
+        # создадим контур рамки для текста
         cv2.rectangle(
-            visualisation,
-            (s_x,s_y),
+            visualisation, (s_x,s_y),
             (s_x + s_w,
                 s_y - self.FONT_HEIGHT - self.FONT_PADDING_VERTICAL*2),
-            self.vis_colors['frame'],
-            thickness=4,)
+            self.vis_colors['frame'], thickness=4,)
 
         self.visualization = visualisation
 
