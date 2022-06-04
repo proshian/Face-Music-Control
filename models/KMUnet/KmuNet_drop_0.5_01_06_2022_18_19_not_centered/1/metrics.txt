@@ -1,0 +1,17 @@
+from sklearn.metrics import accuracy_score
+test_output = model.predict(X_test)
+val_output = model.predict(X_val)
+print(accuracy_score(y_test.argmax(axis=1), test_output.argmax(axis=1)))  # 0.624965171356924
+print(accuracy_score(y_val.argmax(axis=1), val_output.argmax(axis=1)))  # 0.6238506547784898
+print(roc_auc_score(  # 0.9005451622344032
+    y_test,
+    test_output,
+    multi_class = 'ovo',
+    average = 'macro',
+    ))
+print(roc_auc_score(  # 0.8945760960223336
+    y_val,
+    val_output,
+    multi_class = 'ovo',
+    average = 'macro',
+    ))
