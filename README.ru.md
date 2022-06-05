@@ -1,8 +1,11 @@
 # Face Music Control
 
+[<img src = ".\READMEmaterials\flags\gb.svg" width="16" height="12">&nbsp; Click here for this document in English](README.md)
+
+Русская версия README пока отстает от английской.
+
 Face Music Control — это python программа, позволяющая управлять звучанием музыкального инструмента с помощью распознавания эмоций по лицеовой экспрессии.
 
-[Click here for this document in English](README.md)
 
 
 ## Запуск и требования для работы программы
