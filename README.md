@@ -1,44 +1,57 @@
 # Face Music Control
 
-[<img src = ".\READMEmaterials\flags\ru.svg" width="16" height="12">&nbsp; Кликните, чтобы прочитать этот документ на русском](README.ru.md)
+[<img src = ".\READMEmaterials\flags\gb.svg" width="16" height="12">&nbsp; Click for the English version](README.eng.md)
 
-Face Music Control is a python program for controlling the sound of a musical instrument via emotion recognition. It uses a virtual MIDI port to send MIDI CC Messages of amplitudes proportional to the probabilities of emotions recognised by a convolutional neural network based on facial expression. To control DAW parameters, we usually move sliders of a MIDI controller. Face Music Control's approach is similar, except the MIDI controller is virtual, operated by a neural network.
+Face Music Control - это программа на языке python, позволяющая управлять звучанием музыкального инструмента с помощью распознавания эмоций. Она использует виртуальный MIDI-порт для отправки MIDI CC-сообщений с амплитудой, пропорциональной вероятностям эмоций, распознаваемым свёрточной нейронной сетью по лицеой экспрессии. Чтобы управлять параметрами DAW, мы обычно перемещаем ползунки MIDI-контроллера. Подход Face Music Control аналогичен, но MIDI-контроллер виртуальный, и им управляет нейронная сеть.
 
-## Requirements
-Obvious requirements are
-* A camera on your computer
-* A python interpretor
 
-### Libraries
-Install all the required libraries with this command:
+## Требования для работы программы
+
+Очевидные требования:
+* Наличие камеры на компьютере
+* Наличие python интерпретатора на компьютере
+
+### Библиотеки
+Чтобы установить все необходимые библиотеки, необходимо выполнить команду:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Virtual MIDI port driver **(Windows only)**
-Windows requires a driver to be installed to create virtual MIDI ports. Possible solutions:
+### Драйвер виртуального MIDI порта **(Только для Windows)**
+Для Windows требуется установить драйвер для создания виртуальных MIDI портов. Возможные решения:
 * [LoopBe1](https://www.nerds.de/en/download.html)
-<br> Once LoopBe1 is installed a virtual MIDI port will be on your computer until the driver is uninstalled.
+<br> После установки LoopBe1 вирутальный MIDI порт будет на Вашем компьютере пока Вы не удалите драйвер.
 * [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
-<br> It is a program that allows manipulating virtualMIDI driver that comes with loopMIDI. If you chose loopMIDI over LoopBe1 for a virtual MIDI port to be on your computer the loopMIDI must be running
+<br> Это программа, позволяющая манипулировать драйвером virtualMIDI (устанавливается автоматически с loopMIDI). В случае loopMIDI чтобы виртуальный MIDI порт был на компьютере необходимо, чтобы loopMIDI был запущен.
 
+**Если вы используете linux или macOS, Face Music COntrol сам создает виртуальный MIDI порт, и сторонние драйверы не нужны**
 
-**If you use linux or macOS, Face Music Control creates a virtual MIDI port by itself and third-party drivers are not needed**
+## Запуск
 
-## Launching
+Откройте main.py интерпритатором python. Программа тестировалась на python 3.10.4.
 
-Run main.py. The program was tested with python 3.10.4
+## Режим настройки
+Для связывания параметров звучания и эмоций необходимо
+* Открыть режим настройки в Face Music Control и режим MIDI mapping в DAW
+* Последовательно нажимать на элемент графического интерфейса DAW, отвечающий за параметр звучания и кнопку с графическим представлением эмоции, которая должна управлять параметром звучания
+Когда всем параметрам звучания, для которых это требудется, будут сопоставлены эмоции, необходимо выйти из режима MIDI mapping, а затем из режима настройки. 
 
-## Settings mode
+## Режим игры (демонстрация) 
+Управление звучанием происходит в режиме игры.
 
+На видеодемонстрации ниже счастье управляет эхо, злость — перегрузом.
 
-## Play mode
+https://user-images.githubusercontent.com/98213116/172071460-583846ca-99f1-4817-84aa-8ef4403bfec4.mp4
+
+Если видео не отображается, его можно найти в директории проекта: ".\READMEmaterials\demonstrations\happiness-echo_anger-distortion.mp4"
 <!--
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 -->
-## License
+## Достижения
+
+## Лицензия
 Garri Proshian © [MIT](https://choosealicense.com/licenses/mit/) 2020
