@@ -6,8 +6,8 @@ Face Music Control is a python program for controlling the sound of a musical in
 
 ## Requirements
 Obvious requirements are
-* having a camera on your computer
-* python interpretor installed
+* A camera on your computer
+* A python interpretor
 
 ### Libraries
 Install all the required libraries with this command:
@@ -28,15 +28,13 @@ Windows requires a driver to be installed to create virtual MIDI ports. Possible
 
 ## Launching
 
-Run main.py. THe program was tested with python 3.10.4
+Run main.py. The program was tested with python 3.10.4
 
 ## Settings mode
 
+
 ## Play mode
 <!--
-## Использование
-
-
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 

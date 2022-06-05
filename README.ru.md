@@ -1,6 +1,6 @@
 # Face Music Control
 
-[<img src = ".\READMEmaterials\flags\gb.svg" width="16" height="12">&nbsp; Click here for this document in English](README.md)
+[<img src = ".\READMEmaterials\flags\gb.svg" width="16" height="12">&nbsp; Click for the English version](README.md)
 
 Face Music Control - это программа на языке python, позволяющая управлять звучанием музыкального инструмента с помощью распознавания эмоций. Она использует виртуальный MIDI-порт для отправки MIDI CC-сообщений с амплитудой, пропорциональной вероятностям эмоций, распознаваемым свёрточной нейронной сетью по лицеой экспрессии. Чтобы управлять параметрами DAW, мы обычно перемещаем ползунки MIDI-контроллера. Подход Face Music Control аналогичен, но MIDI-контроллер виртуальный, и им управляет нейронная сеть.
 
@@ -29,16 +29,24 @@ pip install -r requirements.txt
 
 ## Запуск
 
-Откройте main.py интерпритатором python. Программа тестировалась python 3.10.4.
+Откройте main.py интерпритатором python. Программа тестировалась на python 3.10.4.
 
+## Режим настройки
+Для связывания параметров звучания и эмоций необходимо
+* Открыть режим настройки в Face Music Control и режим MIDI mapping в DAW
+* Последовательно нажимать на элемент графического интерфейса DAW, отвечающий за параметр звучания и кнопку с графическим представлением эмоции, которая должна управлять параметром звучания
+Когда всем параметрам звучания, для которых это требудется, будут сопоставлены эмоции, необходимо выйти из режима MIDI mapping, а затем из режима настройки. 
+
+## Режим игры (демонстрация) 
+Управление звучанием происходит в режиме игры. На видеодемонстрации ниже счастье управляет эхо, злость — перегрузом.
+.\READMEmaterials\demonstrations\happiness-echo_anger-distortion.mp4
 <!--
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
 -->
+## Достижения
+
 ## Лицензия
 Garri Proshian © [MIT](https://choosealicense.com/licenses/mit/) 2020
