@@ -23,7 +23,7 @@ pip install -r requirements.txt
 * [LoopBe1](https://www.nerds.de/en/download.html)
 <br> После установки LoopBe1 вирутальный MIDI порт будет на Вашем компьютере пока Вы не удалите драйвер.
 * [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
-<br> Это программа, позволяющая манипулировать драйвером virtualMIDI (устанавливается автоматически с loopMIDI). В случае loopMIDI чтобы виртуальный MIDI порт был на компьютере необходимо, чтобы loopMIDI был запущен.
+<br> Это программа, позволяющая манипулировать драйвером virtualMIDI (устанавливается автоматически с loopMIDI). В данном случае виртуальный порт будет на компьютере только когда loopMIDI запущен.
 
 **Если вы используете linux или macOS, Face Music COntrol сам создает виртуальный MIDI порт, и сторонние драйверы не нужны**
 
