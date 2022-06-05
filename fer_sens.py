@@ -75,8 +75,27 @@ class FerSensor(SensorWithVisual):
 
         nn_input = FerSensor.face_img_to_nn_input(face_img)
 
+        viz_w, viz_h = self.resource.get_viz_shape()
+        
+        s_x, s_y, s_w, s_h = [
+            round(coord * self.resource._scaling_factor)
+            for coord in largest_face_rect]
+
+        if s_x + s_w > viz_w or s_y + s_h > viz_h:
+            """
+            # ! Это нужно логировать 
+            print("Warning! The face detection bounding box" \
+                  "exceeds the image boundaries!",
+                  "Iteration aborted.",
+                  f"{(viz_w, viz_h) = }",
+                  f"{(s_x, s_y, s_w, s_h) = }",)
+            """
+            self.visualization = FerSensor.get_dark_overlay(
+                self.resource.get_viz_shape()[::-1])  
+            return None
+
         self.init_viz_with_detection(
-            self.resource.get_viz_shape()[::-1], largest_face_rect)
+            self.resource.get_viz_shape()[::-1], largest_face_rect)  
 
         return nn_input
     
@@ -123,12 +142,12 @@ class FerSensor(SensorWithVisual):
             round(coord * self.resource._scaling_factor)
             for coord in face_coords]
 
-        # print(f"{face_coords = }")
-        # print(f"{transparent_img[s_y:s_y+s_h, s_x:s_x+s_w, 3].shape = }")
-        
+        # print(f"{face_coords = }")      
+        # print(f"{visualisation[s_y:s_y+s_h, s_x:s_x+s_w, 3].shape }"")
+
         # Сделаем участок с лицом прозрачным
         visualisation[s_y:s_y+s_h, s_x:s_x+s_w, 3] = np.zeros(
-            (s_w, s_h), dtype=np.uint8)
+            (s_h, s_w), dtype=np.uint8)
 
         # Добавим рамку вокруг лица
         cv2.rectangle(

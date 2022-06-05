@@ -276,6 +276,8 @@ class FmcUi(QMainWindow):
         self.max_label_font = QFont("Roboto")
         self.max_label_font.setPointSizeF(9.5)
         self.max_label_font.setBold(True)
+
+        
     # Хотелось бы, чтобы в режиме настройки окно приложения было выше всех,
     # а в режиме игры вело себя как обычное окно.
     # Смена флагов приводит к приостанвке рендеринга.
