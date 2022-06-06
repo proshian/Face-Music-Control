@@ -29,15 +29,42 @@ Windows requires a driver installation to create virtual MIDI ports. Possible so
 
 Run main.py. The program was tested with python 3.10.4
 
-## Settings mode
+## Setting mode
+To bind a sound parameter and an emotion, you need to:
+* Open the setting mode in Face Music Control and MIDI mapping mode in a DAW
+* Successively press the DAW graphic interface element responsible for the sound parameter and the button with a graphic representation of the emotion, which should control the sound parameter.
+When all the required sound parameters are mapped to a corresponding emotion, you should exit MIDI mapping mode, and then exit Face Music Control setting mode. 
 
+## Play mode (demo) 
+The sound is controlled in play mode.
 
-## Play mode
+In the video demonstration below, happiness controls the echo, and anger controls the distortion.
+
+https://user-images.githubusercontent.com/98213116/172071460-583846ca-99f1-4817-84aa-8ef4403bfec4.mp4
+
+*Sound on the video in the README is off by default, but **it can be turned on.***
+
+*All demos are in the project directory: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). If the video does not display, you can find it there ( [happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).
+
 <!--
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 -->
+## Face Music Control achievements
+Competitions:
+* Undergraduate Paper Contest of the 11th Congress of Young Scientists - win in 6 categories:
+(Big Data and Machine Learning, Data Analytics, Artificial Intelligence in Industry, Speech Technologies and Machine Learning, Financial Big Data, Deep Learning and Generative Artificial Intelligence)
+* NeuroTech Cup - 3rd place
+
+Conferences:
+* 11th Congress of Young Scientists
+* Samara Neuroweek 2020
+
+A publication in the Proceedings of the 11th Congress of Young Scientists (will be published by the end of 2022)
+
+Translated with www.DeepL.com/Translator (free version)
+
 ## License
 Garri Proshian © [MIT](https://choosealicense.com/licenses/mit/) 2020
