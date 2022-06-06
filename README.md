@@ -42,7 +42,7 @@ pip install -r requirements.txt
 
 На видеодемонстрации ниже счастье управляет эхо, злость — перегрузом.
 
-[Если Вы видите этот текст, видео не отобразилось. Но его можно найти в директории проекта: ".\READMEmaterials\demonstrations\happiness-echo_anger-distortion.mp4"](https://user-images.githubusercontent.com/98213116/172071460-583846ca-99f1-4817-84aa-8ef4403bfec4.mp4)
+![Если Вы видите этот текст, видео не отобразилось. Но его можно найти в директории проекта: ".\READMEmaterials\demonstrations\happiness-echo_anger-distortion.mp4"](https://user-images.githubusercontent.com/98213116/172071460-583846ca-99f1-4817-84aa-8ef4403bfec4.mp4)
 
 *Звук на видео в README по умолчанию выключен, но **его можно включить.***
 

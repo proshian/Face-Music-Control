@@ -17,14 +17,13 @@ pip install -r requirements.txt
 ```
 
 ### Virtual MIDI port driver **(Windows only)**
-Windows requires a driver to be installed to create virtual MIDI ports. Possible solutions:
+Windows requires a driver installation to create virtual MIDI ports. Possible solutions:
 * [LoopBe1](https://www.nerds.de/en/download.html)
-<br> Once LoopBe1 is installed a virtual MIDI port will be on your computer until the driver is uninstalled.
+<br> Once LoopBe1 is installed, a virtual MIDI port will be on your computer until the driver is uninstalled.
 * [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
-<br> It is a program that allows manipulating virtualMIDI driver that comes with loopMIDI. If you chose loopMIDI over LoopBe1 for a virtual MIDI port to be on your computer the loopMIDI must be running
+<br> It is a program that allows you to manipulate virtualMIDI driver that comes with loopMIDI. If you chose loopMIDI over LoopBe1 you have to run loop MIDI to have a virtual MIDI port on your computer.
 
-
-**If you use linux or macOS, Face Music Control creates a virtual MIDI port by itself and third-party drivers are not needed**
+**If you use linux or macOS, Face Music Control creates a virtual MIDI port by itself, and three is no need for third-party drivers.**
 
 ## Launching
 
