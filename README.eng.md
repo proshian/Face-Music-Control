@@ -8,6 +8,7 @@ Face Music Control is a python program for controlling the sound of a musical in
 Obvious requirements are
 * A camera on your computer
 * A python interpretor
+* A DAW
 
 ### Libraries
 Install all the required libraries with this command:
