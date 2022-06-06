@@ -44,7 +44,7 @@ https://user-images.githubusercontent.com/98213116/172071460-583846ca-99f1-4817-
 
 *Sound on the video in the README is off by default, but **it can be turned on.***
 
-*All demos are in the project directory: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). If the video does not display, you can find it there ([happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).
+*All demonstrations are in the project directory: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). If the video does not display, you can find it there ([happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).
 
 <!--
 ## Contributing
