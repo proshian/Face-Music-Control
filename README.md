@@ -25,7 +25,7 @@ pip install -r requirements.txt
 * [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
 <br> Это программа, позволяющая манипулировать драйвером virtualMIDI (устанавливается автоматически с loopMIDI). В данном случае виртуальный порт будет на компьютере только когда loopMIDI запущен.
 
-**Если вы используете linux или macOS, Face Music COntrol сам создает виртуальный MIDI порт, и сторонние драйверы не нужны**
+**Если вы используете linux или macOS, Face Music Control сам создает виртуальный MIDI порт, и сторонние драйверы не нужны**
 
 ## Запуск
 
@@ -46,7 +46,7 @@ https://user-images.githubusercontent.com/98213116/172071460-583846ca-99f1-4817-
 
 *Звук на видео в README по умолчанию выключен, но **его можно включить.***
 
-*Все демонстрации находятся в директории проекта: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). Если видео не отобразилось, его можно найти там ( [happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).*
+*Все демонстрации находятся в директории проекта: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). Если видео не отобразилось, его можно найти там ([happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).*
 
 <!--
 ## Contributing

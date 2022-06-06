@@ -44,7 +44,7 @@ https://user-images.githubusercontent.com/98213116/172071460-583846ca-99f1-4817-
 
 *Sound on the video in the README is off by default, but **it can be turned on.***
 
-*All demos are in the project directory: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). If the video does not display, you can find it there ( [happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).
+*All demos are in the project directory: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). If the video does not display, you can find it there ([happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).
 
 <!--
 ## Contributing
@@ -63,8 +63,6 @@ Conferences:
 * Samara Neuroweek 2020
 
 A publication in the Proceedings of the 11th Congress of Young Scientists (will be published by the end of 2022)
-
-Translated with www.DeepL.com/Translator (free version)
 
 ## License
 Garri Proshian © [MIT](https://choosealicense.com/licenses/mit/) 2020
