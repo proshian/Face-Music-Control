@@ -1,0 +1,3 @@
+The most important:
+* Move check of boundaries inside FaceDetector.detect_faces(). Otherwise if there's a huge face outside borders it would be chosen over a big face inside
+* Make FaceDetector with a changeable detector (possible to change backend)

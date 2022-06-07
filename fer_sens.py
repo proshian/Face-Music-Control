@@ -1,4 +1,3 @@
-from ast import excepthandler
 import os
 
 import cv2
