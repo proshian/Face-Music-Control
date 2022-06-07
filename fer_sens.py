@@ -1,3 +1,4 @@
+from ast import excepthandler
 import os
 
 import cv2
@@ -43,6 +44,7 @@ class FerSensor(SensorWithVisual):
         Подготовка изображения лица к формату входных данных нейронной сети
         """
         gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
+        
         gray_face_48 =cv2.resize(gray_face_img,(48,48))
 
         gray_face_48_normed = gray_face_48 / 255
@@ -70,18 +72,15 @@ class FerSensor(SensorWithVisual):
             return None
 
         (x,y,w,h) = self._face_coords = largest_face_rect 
-        
-        face_img = cam_img[y:y+h, x:x+w]
-
-        nn_input = FerSensor.face_img_to_nn_input(face_img)
 
         viz_w, viz_h = self.resource.get_viz_shape()
-        
+        # ! Здесь логичнее было бы оперировать НЕскалированными размерами
         s_x, s_y, s_w, s_h = [
             round(coord * self.resource._scaling_factor)
             for coord in largest_face_rect]
-
-        if s_x + s_w > viz_w or s_y + s_h > viz_h:
+        
+        if (s_x < 0 or s_y < 0 or 
+            s_x + s_w > viz_w or s_y + s_h > viz_h):
             """
             # ! Это нужно логировать 
             print("Warning! The face detection bounding box" \
@@ -93,6 +92,10 @@ class FerSensor(SensorWithVisual):
             self.visualization = FerSensor.get_dark_overlay(
                 self.resource.get_viz_shape()[::-1])  
             return None
+        
+        face_img = cam_img[y:y+h, x:x+w]
+
+        nn_input = FerSensor.face_img_to_nn_input(face_img)
 
         self.init_viz_with_detection(
             self.resource.get_viz_shape()[::-1], largest_face_rect)  
@@ -215,7 +218,7 @@ emotions = [
 emotions_icons = [
     os.path.join(icons_dir, f"{emotion}.svg") for emotion in emotions]
 
-# model_dir = 'models/KMUnet/KmuNet_drop_0.5_01_06_2022_18_19_not_centered/'
+model_dir = 'models/KMUnet/KmuNet_drop_0.5_01_06_2022_18_19_not_centered/'
 # model_dir = 'models/KMUnet/02_06_22_mod3'
-model_dir = 'models/KMUnet/02_06_22_mod11'
-model_weights_dir = '2'
+# model_dir = 'models/KMUnet/02_06_22_mod11'
+model_weights_dir = '1'
