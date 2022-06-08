@@ -1,6 +1,6 @@
 # Face Music Control
 
-[<img src = ".\READMEmaterials\flags\ru.svg" width="16" height="12">&nbsp; Кликните, чтобы прочитать этот документ на русском](README.md)
+[<img src = ".\READMEmaterials\flags\ru.svg">&nbsp; Кликните, чтобы прочитать этот документ на русском](README.md)
 
 Face Music Control is a python program for controlling the sound of a musical instrument via emotion recognition. It uses a virtual MIDI port to send MIDI CC Messages of amplitudes proportional to the probabilities of emotions recognised by a convolutional neural network based on facial expression. To control DAW parameters, we usually move sliders of a MIDI controller. Face Music Control's approach is similar, except the MIDI controller is virtual, operated by a neural network.
 
