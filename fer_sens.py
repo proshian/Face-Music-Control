@@ -78,20 +78,6 @@ class FerSensor(SensorWithVisual):
             round(coord * self.resource._scaling_factor)
             for coord in largest_face_rect]
         
-        if (s_x < 0 or s_y < 0 or 
-            s_x + s_w > viz_w or s_y + s_h > viz_h):
-            """
-            # ! Это нужно логировать 
-            print("Warning! The face detection bounding box" \
-                  "exceeds the image boundaries!",
-                  "Iteration aborted.",
-                  f"{(viz_w, viz_h) = }",
-                  f"{(s_x, s_y, s_w, s_h) = }",)
-            """
-            self.visualization = FerSensor.get_dark_overlay(
-                self.resource.get_viz_shape()[::-1])  
-            return None
-        
         face_img = cam_img[y:y+h, x:x+w]
 
         nn_input = FerSensor.face_img_to_nn_input(face_img)
