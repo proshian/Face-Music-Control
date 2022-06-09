@@ -1,53 +1,58 @@
 # Face Music Control
 
-[<img src = ".\READMEmaterials\flags\gb.svg">&nbsp; Click for the English version](README.eng.md)
+[<img src = ".\READMEmaterials\flags\ru.svg">&nbsp; Кликните, чтобы прочитать этот документ на русском](README.ru.md)
 
-Face Music Control - это программа на языке python, позволяющая управлять звучанием музыкального инструмента с помощью распознавания эмоций. Она использует виртуальный MIDI-порт для отправки MIDI CC-сообщений с амплитудой, пропорциональной вероятностям эмоций, распознаваемым свёрточной нейронной сетью по лицеой экспрессии. Чтобы управлять параметрами DAW, мы обычно перемещаем ползунки MIDI-контроллера. Подход Face Music Control аналогичен, но MIDI-контроллер виртуальный, и им управляет нейронная сеть.
+Face Music Control is a python program for controlling the sound of a musical instrument via emotion recognition. It uses a virtual MIDI port to send MIDI CC Messages of amplitudes proportional to the probabilities of emotions recognised by a convolutional neural network based on facial expression. To control DAW parameters, we usually move sliders of a MIDI controller. Face Music Control's approach is similar, except the MIDI controller is virtual, operated by a neural network.
 
+## Motivation
+When improvising and creating new music, the existing interfaces for controlling the sound (pedals, sliders, etc.) are inconvenient and rarely applicable. The fact is that the musician, when creating music, lacks concentration to look for the right tone and control the sound of the instrument. At the same time, in these contexts it is particularly important that the character of the sound is appropriate to the musician's emotional state. I have not found any means for controlling the sound of an instrument based on the musician's emotions. Therefore, I wrote this program.
 
-## Требования для работы программы
+## Additional applications
+* A new kind of interaction with an instrument can be a self-contained performance
+* Since the lighting equipment is controlled by MIDI events, Face Music Control can be used to complement the visuals of concerts
 
-Очевидные требования:
-* Наличие камеры на компьютере
-* Наличие python интерпретатора на компьютере
-* Наличие DAW
+## Requirements
+Obvious requirements are
+* A camera on your computer
+* A python interpretor
+* A DAW
 
-### Библиотеки
-Чтобы установить все необходимые библиотеки, необходимо выполнить команду:
+### Libraries
+Install all the required libraries with this command:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Драйвер виртуального MIDI порта **(Только для Windows)**
-Для Windows требуется установить драйвер для создания виртуальных MIDI портов. Возможные решения:
+### Virtual MIDI port driver **(Windows only)**
+Windows requires a driver installation to create virtual MIDI ports. Possible solutions:
 * [LoopBe1](https://www.nerds.de/en/download.html)
-<br> После установки LoopBe1 вирутальный MIDI порт будет на Вашем компьютере пока Вы не удалите драйвер.
+<br> Once LoopBe1 is installed, a virtual MIDI port will be on your computer until the driver is uninstalled.
 * [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
-<br> Это программа, позволяющая манипулировать драйвером virtualMIDI (устанавливается автоматически с loopMIDI). В данном случае виртуальный порт будет на компьютере только когда loopMIDI запущен.
+<br> It is a program that allows you to manipulate virtualMIDI driver that comes with loopMIDI. If you chose loopMIDI over LoopBe1 you have to run loop MIDI to have a virtual MIDI port on your computer.
 
-**Если вы используете linux или macOS, Face Music Control сам создает виртуальный MIDI порт, и сторонние драйверы не нужны**
+**If you use linux or macOS, Face Music Control creates a virtual MIDI port by itself, and three is no need for third-party drivers.**
 
-## Запуск
+## Launching
 
-Откройте main.py интерпритатором python. Программа тестировалась на python 3.10.4.
+Run main.py. The program was tested with python 3.10.4
 
-## Режим настройки
-Для связывания эмоций и параметров звучания необходимо:
-* Открыть режим настройки в Face Music Control и режим MIDI mapping в DAW
-* Последовательно нажимать на элемент графического интерфейса DAW, отвечающий за параметр звучания и кнопку с графическим представлением эмоции, которая должна управлять параметром звучания
-Когда всем параметрам звучания, для которых это требудется, будут сопоставлены эмоции, необходимо выйти из режима MIDI mapping, а затем из режима настройки. 
+## Setting mode
+To bind a sound parameter and an emotion, you need to:
+* Open the setting mode in Face Music Control and MIDI mapping mode in a DAW
+* Successively press the DAW graphic interface element responsible for the sound parameter and the button with a graphic representation of the emotion, which should control the sound parameter.
+When all the required sound parameters are mapped to a corresponding emotion, you should exit MIDI mapping mode, and then exit Face Music Control setting mode. 
 
-## Режим игры (демонстрация) 
-Управление звучанием происходит в режиме игры.
+## Play mode (demo) 
+The sound is controlled in play mode.
 
-На видеодемонстрации ниже счастье управляет эхо, злость — перегрузом.
+In the video demonstration below, happiness controls the echo, and anger controls the distortion.
 
 https://user-images.githubusercontent.com/98213116/172071460-583846ca-99f1-4817-84aa-8ef4403bfec4.mp4
 
-*Звук на видео в README по умолчанию выключен, но **его можно включить.***
+*Sound on the video in the README is off by default, but **it can be turned on.***
 
-*Все демонстрации находятся в директории проекта: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). Если видео не отобразилось, его можно найти там ([happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).*
+*All demonstrations are in the project directory: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). If the video does not display, you can find it there ([happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).
 
 <!--
 ## Contributing
@@ -55,17 +60,17 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 -->
-## Достижения проекта
-Конкурсы:
-* Конкурс докладов бакалавров XI конгресса молодых учёных — победа в 6 номинациях:
-(Большие данные и машинное обучение, Аналитика данных, Искусственный интеллект в промышленности, Речевые технологии и машинное обучение, Финансовые технологии больших данных, Глубокое обучение и генеративный искусственный интеллект
-* NeuroTech Cup — Диплом III-ей степени
+## Face Music Control achievements
+Competitions:
+* Undergraduate Paper Contest of the 11th Congress of Young Scientists - win in 6 categories:
+(Big Data and Machine Learning, Data Analytics, Artificial Intelligence in Industry, Speech Technologies and Machine Learning, Financial Big Data, Deep Learning and Generative Artificial Intelligence)
+* NeuroTech Cup - 3rd place
 
-Конференции:
-* XI конгресс молодых учёных
+Conferences:
+* 11th Congress of Young Scientists
 * Samara Neuroweek 2020
 
-Публикация в сборнике трудов XI конгресса молодых ученых (в печати)
+A publication in the Proceedings of the 11th Congress of Young Scientists (will be published by the end of 2022)
 
-## Лицензия
+## License
 Garri Proshian © [MIT](https://choosealicense.com/licenses/mit/) 2020
