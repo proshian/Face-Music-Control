@@ -43,7 +43,7 @@ To bind a sound parameter and an emotion, you need to:
 * Successively press the DAW graphic interface element responsible for the sound parameter and the button with a graphic representation of the emotion, which should control the sound parameter.
 When all the required sound parameters are mapped to a corresponding emotion, you should exit MIDI mapping mode, and then exit Face Music Control setting mode. 
 
-## Play mode (demo) 
+## Play mode
 The sound is controlled in play mode.
 
 In the video demonstration below, happiness controls the echo, and anger controls the distortion.

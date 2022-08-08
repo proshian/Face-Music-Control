@@ -1,7 +1,9 @@
+from typing import List 
+
 import mido
 # import rtmidi
 
-# Ниже испорты для аннотации типов
+# импорт ниже нужен для аннотации типов
 from sensor import Sensor
 
 
@@ -11,7 +13,7 @@ class CcSender:
     (посылает Control CHange MIDI события).
     """
 
-    def __init__(self, sensors: list[Sensor]) -> None:
+    def __init__(self, sensors: List[Sensor]) -> None:
         self.port = CcSender._init_port()
 
         self.biases = dict()
@@ -43,7 +45,7 @@ class CcSender:
                   f"with name: {port_name} as a default port")
             return port
     
-    def _find_existing_virt_port(port_names: list[str]):
+    def _find_existing_virt_port(port_names: List[str]):
         
         common_port_name_fragments = ['LoopBe', 'loopMIDI']
         for port_name in port_names:
@@ -53,7 +55,7 @@ class CcSender:
         return port_names[-1]
         
 
-    def _set_biases(self, sensors: list[Sensor]) -> None:
+    def _set_biases(self, sensors: List[Sensor]) -> None:
         next_bias = 0
         for sensor in sensors:
             self.biases[sensor.id] = next_bias

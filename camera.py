@@ -1,4 +1,5 @@
 # from tracemalloc import Snapshot
+from typing import List
 
 import cv2
 from PyQt5.QtWidgets import QLabel
@@ -79,6 +80,6 @@ class Camera(Resource):
             map(lambda x: round(x*self._scaling_factor),
                 self.cur_data.shape[:2][::-1]))
 
-    def get_viz_shape(self) -> list[int]:
+    def get_viz_shape(self) -> List[int]:
         """Возвращает список [ширина, высота]"""
         return self.viz_shape

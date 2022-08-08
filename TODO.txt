@@ -1,2 +1,0 @@
-The most important:
-* Make FaceDetector with a changeable detector (possible to change backend)

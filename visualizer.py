@@ -5,7 +5,7 @@ from PIL import Image
 import numpy as np
 
 # Импорты ниже нудны для аннотации типов 
-from typing import Union
+from typing import Union, List
 from PyQt5.QtWidgets import QLabel
 from sensor import SensorWithVisual
 from resource import Resource
@@ -26,7 +26,7 @@ class Vizualizer():
        полученное альфа-композицией визуализаций источников.  
     """
     def __init__(self, 
-                 source_list: list[Union[SensorWithVisual, Resource]],
+                 source_list: List[Union[SensorWithVisual, Resource]],
                  img_qlabel: QLabel) -> None:
         self._img_qlabel = img_qlabel
         self._source_list = source_list

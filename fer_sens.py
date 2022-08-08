@@ -1,4 +1,5 @@
 import os
+from typing import List, Tuple
 
 import cv2
 from tensorflow.keras.models import model_from_json 
@@ -15,7 +16,7 @@ class FerSensor(SensorWithVisual):
     Метод get_results возвращает массив вероятностей семи эмоций,
     названия которых представлены в поле names
     """
-    def __init__(self, names: list[str], icon_locations: list[str],
+    def __init__(self, names: List[str], icon_locations: List[str],
                  resource: Camera, min_possible: float, max_possible: float,
                  model_dir: str, weights_dir: str,
                  model_name: str = 'fer.json',
@@ -33,12 +34,12 @@ class FerSensor(SensorWithVisual):
         self.visualization = FerSensor.get_dark_overlay(
             self.resource.get_viz_shape()[::-1])
 
-    def get_results(self, input) -> list[float]:
+    def get_results(self, input) -> List[float]:
         results = self._model.predict(input)[0]
         self.visualize_prediction(results)
         return results
 
-    def face_img_to_nn_input(face_img: np.ndarray) -> list[float]:
+    def face_img_to_nn_input(face_img: np.ndarray) -> List[float]:
         """
         Подготовка изображения лица к формату входных данных нейронной сети
         """
@@ -98,8 +99,8 @@ class FerSensor(SensorWithVisual):
         return model
     
 
-    def get_dark_overlay(img_height_and_width: tuple[int],
-                         rgba_color: tuple[int] = None) -> np.ndarray:
+    def get_dark_overlay(img_height_and_width: Tuple[int],
+                         rgba_color: Tuple[int] = None) -> np.ndarray:
         """
         Получение RGBA изображения размером img_height_and_width
         в виде np.ndarray с затемнением цвета rgba_color.

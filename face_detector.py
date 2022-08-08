@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 
+from typing import List, Tuple
 """
 Предполагается, что несколько сенсоров могут требовать детекции лица.
 Кажется логичным создать один объект детектора
@@ -16,16 +17,16 @@ class FaceDetector(ABC):
     Отвечает за детекцию лиц, в частности, самого большого лица.
     """
     @abstractmethod
-    def detect_faces(self, img: np.ndarray) -> list[tuple[int]]:
+    def detect_faces(self, img: np.ndarray) -> List[Tuple[int]]:
         pass
 
-    def _box_in_boundaries(detection_tuple: tuple[int],
+    def _box_in_boundaries(detection_tuple: Tuple[int],
                            img_h: int, img_w: int) -> bool:
         x, y, w, h = detection_tuple
         return (x > 0) and (y > 0) and (x+w < img_w) and (y+h < img_h)
 
 
-    def _get_rect_area(rect: tuple[int]) -> int:
+    def _get_rect_area(rect: Tuple[int]) -> int:
         _,_,w,h = rect
         return w*h
 
@@ -52,7 +53,7 @@ class MpFaceDetector(FaceDetector):
         self.mp_face_detection = mp_face_detection.FaceDetection(
             model_selection=0, min_detection_confidence=0.7)
     
-    def detect_faces(self, img: np.ndarray) -> list[tuple[int]]:
+    def detect_faces(self, img: np.ndarray) -> List[Tuple[int]]:
         mp_results = self.mp_face_detection.process(img)
         mp_detections = []
         if mp_results.detections:
@@ -84,7 +85,7 @@ class HaarFaceDetector(FaceDetector):
         self._face_detector = cv2.CascadeClassifier(
             r'haarcascade_frontalface_default.xml')
     
-    def detect_faces(self, img: np.ndarray) -> list[tuple[int]]:
+    def detect_faces(self, img: np.ndarray) -> List[Tuple[int]]:
         return self._face_detector.detectMultiScale(img, 1.32, 5)
 
 
