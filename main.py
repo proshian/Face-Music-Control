@@ -7,6 +7,9 @@ from PyQt5 import QtGui
 from sensor import Sensor
 from fmc_ui import FmcUi
 #from rand_sens import rand_sens
+
+# чтобы пользоваться моделями FER2013, 
+# в строчке ниже заменить fer_sens на fer_sens_old
 from fer_sens import (
     FerSensor, emotions_icons, emotions, model_dir, model_weights_dir)
 from cc_sender import CcSender

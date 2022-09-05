@@ -198,13 +198,14 @@ class FerSensor(SensorWithVisual):
 
 
 icons_dir = 'icons/emojis/'
-emotions = [
-    "angry", "disgusted", "fearful", "happy", "sad", "surprised", "neutral"]
+
+# задание преобразований из чисел в эмоции и наоборот
+emotions = ('happy', 'sad', 'angry', 'neutral', 'surprised', 'fearful')
+# emotion_dict = {emotions[i] : i for i in range(len(emotions))}
+
 
 emotions_icons = [
     os.path.join(icons_dir, f"{emotion}.svg") for emotion in emotions]
 
-model_dir = 'models/KMUnet/KmuNet_drop_0.5_01_06_2022_18_19_not_centered/'
-# model_dir = 'models/KMUnet/02_06_22_mod3'
-# model_dir = 'models/KMUnet/02_06_22_mod11'
+model_dir = 'models/FerPLUS_6_emotions/mod2/'
 model_weights_dir = '1'
