@@ -9,8 +9,6 @@ class Sensor(ABC):
     """
     id_iterator = itertools.count()
 
-    all_sensors = []
-
     def __init__(self, names, icon_locations,
                  resource, min_possible, max_possible):
 
@@ -21,7 +19,6 @@ class Sensor(ABC):
         self.resource = resource
         
         self.id = next(Sensor.id_iterator)
-        Sensor.all_sensors.append(self)
 
     def acquire_raw(self):
         return self.resource.get_cur_data()

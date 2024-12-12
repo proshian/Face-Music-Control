@@ -8,7 +8,7 @@ import numpy as np
 from typing import Union, List
 from PyQt5.QtWidgets import QLabel
 from sensor import SensorWithVisual
-from resource import Resource
+from fmc_resource import Resource
 
 
 class Vizualizer():
