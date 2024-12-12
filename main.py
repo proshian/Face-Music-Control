@@ -1,20 +1,16 @@
 import sys
-from typing import NoReturn
+from typing import List
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtGui
 
 from sensor import Sensor
 from fmc_ui import FmcUi
-#from rand_sens import rand_sens
-
-# чтобы пользоваться моделями FER2013, 
-# в строчке ниже заменить fer_sens на fer_sens_old
 from fer_sens import (
     FerSensor, emotions_icons, emotions, model_dir, model_weights_dir)
 from cc_sender import CcSender
 from controller import Controller
-from resource import Resource
+from fmc_resource import Resource
 from camera import Camera
 from visualizer import Vizualizer
 
@@ -23,7 +19,6 @@ def set_up_app() -> QApplication:
     fmc = QApplication(sys.argv)
     
     QtGui.QFontDatabase.addApplicationFont('./Roboto/Roboto-Regular.ttf')
-    # QtGui.QFontDatabase.addApplicationFont('./Roboto/Roboto-Medium.ttf')
     QtGui.QFontDatabase.addApplicationFont('./Roboto/Roboto-Bold.ttf')
 
     fmc.setStyle('Fusion')
@@ -33,31 +28,27 @@ def set_up_app() -> QApplication:
     with file:
         qss = file.read()
         fmc.setStyleSheet(qss)
-    """
-    palette = QPalette()
-    palette.setColor(QPalette.Window, Qt.white)
-    palette.setColor(QPalette.Button, QColor(255, 255, 255))
-    fmc.setPalette(palette)
-    """
+
+    # palette = QPalette()
+    # palette.setColor(QPalette.Window, Qt.white)
+    # palette.setColor(QPalette.Button, QColor(255, 255, 255))
+    # fmc.setPalette(palette)
+
     return fmc
 
-def main() -> NoReturn:
-    # Создадим все требующиеся объекты наследников Resource (только camera)
+def main() -> None:
     camera = Camera()
+    resources: List[Resource] = [camera]
     
-    # Создадим все требующиеся объекты наследников Sensor (только fer_sens)
     fer_sens = FerSensor(emotions, emotions_icons, camera, 0, 1, model_dir, model_weights_dir)
+    sensors: List[Sensor] = [fer_sens]
 
-    # ! Можно добавить окно, возникающее, если нет доступных MIDI портов.
-    # и проверяющее раз в n миллисекунд, наличие порта.
-    # Когда порт появляется, данное окно закрывается и открывается FmcUi.
-    cc_sender = CcSender(Sensor.all_sensors)
-    
+    cc_sender = CcSender(sensors)
     
     fmc = set_up_app()
     
     # создание окна
-    view = FmcUi(Sensor.all_sensors, cc_sender)
+    view = FmcUi(sensors, cc_sender)
 
     # Внесение элемента граф. интерфейса в качестве поля камеры. 
     # Необходимо для масштабирования её визуализации
@@ -67,8 +58,8 @@ def main() -> NoReturn:
     camera_vizualizer = Vizualizer([camera, fer_sens], view.image_label)
 
     controller = Controller(
-        [camera_vizualizer], cc_sender, Sensor.all_sensors,
-        Resource.all_resources, view)
+        viz_list = [camera_vizualizer], cc_sender = cc_sender, 
+        sensors = sensors, resources = resources, ui = view)
     
     view.set_controller(controller)
 

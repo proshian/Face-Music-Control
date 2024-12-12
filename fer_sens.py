@@ -209,3 +209,16 @@ emotions_icons = [
 
 model_dir = 'models/FerPLUS_6_emotions/mod2/'
 model_weights_dir = '1'
+
+
+
+
+# Values below are alternatives to the ones above. They use KMUnet trained on FER2013
+
+# emotions = [
+#     "angry", "disgusted", "fearful", "happy", "sad", "surprised", "neutral"]
+
+# model_dir = 'models/KMUnet/KmuNet_drop_0.5_01_06_2022_18_19_not_centered/'
+# # model_dir = 'models/KMUnet/02_06_22_mod3'
+# # model_dir = 'models/KMUnet/02_06_22_mod11'
+# model_weights_dir = '1'

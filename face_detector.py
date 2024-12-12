@@ -1,3 +1,4 @@
+from typing import Optional
 from abc import ABC, abstractmethod
 
 import cv2
@@ -30,7 +31,7 @@ class FaceDetector(ABC):
         _,_,w,h = rect
         return w*h
 
-    def detect_largest_face(self, img: np.ndarray) -> np.ndarray:
+    def detect_largest_face(self, img: np.ndarray) -> Optional[np.ndarray]:
         """
         Возвращает координаты (x, y, w, h) самого большого лица на img.
         """

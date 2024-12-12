@@ -4,7 +4,7 @@ from typing import List
 import cv2
 from PyQt5.QtWidgets import QLabel
 
-from  resource import Resource
+from  fmc_resource import Resource
 
 
 class Camera(Resource):

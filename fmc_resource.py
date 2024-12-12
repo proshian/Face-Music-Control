@@ -9,15 +9,13 @@ class Resource():
     предоставлять доступ к этому полю с помощью get_cur_data.
     """
     id_iterator = itertools.count()
-
-    all_resources = []
+    
     def __init__(self) -> None:
         self.id: int = next(Resource.id_iterator)
         self.cur_data = None
         # Нужно определить в наследнике falsy_data - данные,
         # сведетельствующие об ошибке
         self.falsy_data = None
-        Resource.all_resources.append(self)
 
     @abstractmethod
     def update_cur_data(self):
