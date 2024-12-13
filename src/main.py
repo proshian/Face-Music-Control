@@ -1,20 +1,21 @@
+import os
 import sys
 from typing import List
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtGui
 
-from sensor import Sensor
-from fmc_ui import FmcUi
-from fer_sens import (
+from sensors.sensor import Sensor
+from ui.fmc_ui import FmcUi
+from sensors.fer_sens import (
     FerSensor, emotions_icons, emotions, model_dir, model_weights_dir)
 from cc_sender import CcSender
 from controller import Controller
-from fmc_resource import Resource
-from camera import Camera
+from resources.fmc_resource import Resource
+from resources.camera import Camera
 from visualizer import VizualizaiotnAssembler
-from fer_snes_vizualization import FerSensorPartialVizualizationCreator
-from camera_vizualization import CameraPartialVizualizationCreator
+from partial_visualizations.fer_snes_vizualization import FerSensorPartialVizualizationCreator
+from partial_visualizations.camera_vizualization import CameraPartialVizualizationCreator
 
 
 def set_up_app() -> QApplication:
@@ -25,10 +26,8 @@ def set_up_app() -> QApplication:
 
     fmc.setStyle('Fusion')
 
-    file = open("style.qss",'r')
-
-    with file:
-        qss = file.read()
+    with open("./src/ui/style.qss",'r') as f:
+        qss = f.read()
         fmc.setStyleSheet(qss)
 
     # palette = QPalette()

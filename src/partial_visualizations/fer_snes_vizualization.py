@@ -4,9 +4,9 @@ import cv2
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 
-from camera_vizualization import CameraPartialVizualizationCreator
-from fer_sens import FerSensor
-from partial_vizualization_creator import PartialVizualizationCreator
+from .camera_vizualization import CameraPartialVizualizationCreator
+from sensors.fer_sens import FerSensor
+from .partial_vizualization_creator import PartialVizualizationCreator
 
 
 

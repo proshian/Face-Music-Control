@@ -5,8 +5,8 @@ import cv2
 from tensorflow.keras.models import model_from_json 
 import numpy as np
 
-from sensor import Sensor
-from camera import Camera
+from .sensor import Sensor
+from resources.camera import Camera
 from face_detector import face_detector
 
 
@@ -75,7 +75,7 @@ class FerSensor(Sensor):
         return model
   
 
-icons_dir = 'icons/emojis/'
+icons_dir = './assets/icons/emojis/'
 
 # задание преобразований из чисел в эмоции и наоборот
 emotions = ('happy', 'sad', 'angry', 'neutral', 'surprised', 'fearful')
@@ -85,7 +85,7 @@ emotions = ('happy', 'sad', 'angry', 'neutral', 'surprised', 'fearful')
 emotions_icons = [
     os.path.join(icons_dir, f"{emotion}.svg") for emotion in emotions]
 
-model_dir = 'models/FerPLUS_6_emotions/mod2/'
+model_dir = './assets/models/FerPLUS_6_emotions/mod2/'
 model_weights_dir = '1'
 
 

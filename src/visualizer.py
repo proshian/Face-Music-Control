@@ -5,9 +5,9 @@ from PIL import Image
 import numpy as np
 
 # The imports below are for type hints
-from typing import Union, List
+from typing import List
 from PyQt5.QtWidgets import QLabel
-from partial_vizualization_creator import PartialVizualizationCreator
+from partial_visualizations.partial_vizualization_creator import PartialVizualizationCreator
 
 
 class VizualizaiotnAssembler():

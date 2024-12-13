@@ -3,7 +3,7 @@ from typing import List
 
 import cv2
 
-from  fmc_resource import Resource
+from  .fmc_resource import Resource
 
 
 class Camera(Resource):

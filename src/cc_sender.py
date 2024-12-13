@@ -3,7 +3,7 @@ from typing import List
 import mido
 
 # импорт ниже нужен для аннотации типов
-from sensor import Sensor
+from sensors.sensor import Sensor
 
 
 class CcSender:

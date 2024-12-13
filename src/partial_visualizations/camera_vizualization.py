@@ -3,8 +3,8 @@ from typing import List
 import cv2
 from PyQt5.QtWidgets import QLabel
 
-from camera import Camera
-from partial_vizualization_creator import PartialVizualizationCreator
+from resources.camera import Camera
+from .partial_vizualization_creator import PartialVizualizationCreator
 
 class CameraPartialVizualizationCreator(PartialVizualizationCreator):
     def __init__(self, camera: Camera, img_label: QLabel) -> None:

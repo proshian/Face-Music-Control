@@ -83,7 +83,7 @@ class MpFaceDetector(FaceDetector):
 class HaarFaceDetector(FaceDetector):
     def __init__(self) -> None:
         self._face_detector = cv2.CascadeClassifier(
-            r'haarcascade_frontalface_default.xml')
+            r'assets/haarcascade_frontalface_default.xml')
     
     def detect_faces(self, img: np.ndarray) -> List[BoundingBox]:
         detections: List[np.ndarray] = self._face_detector.detectMultiScale(img, 1.32, 5)
@@ -91,4 +91,4 @@ class HaarFaceDetector(FaceDetector):
 
 
 # Данный объект будет внедряться во все sensor'ы, где требуется детекция лиц
-face_detector = MpFaceDetector()
+face_detector = HaarFaceDetector()
