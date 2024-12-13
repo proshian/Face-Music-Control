@@ -45,16 +45,14 @@ class FerSensor(SensorWithVisual):
         """
         gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
         
-        gray_face_48 =cv2.resize(gray_face_img,(48,48))
+        gray_face_48 = cv2.resize(gray_face_img,(48,48))
 
         gray_face_48_normed = gray_face_48 / 255
 
-        # добавляем размерность, отвечающую за число каналов. (48, 48, 1)
+        # Add dimensions for channels and batch size (1, 48, 48, 1)
         nn_input = np.expand_dims(gray_face_48_normed, axis = 2)
-
-        # добавляем размерность, отвечющую за число элементов батча.
-        # (1, 48, 48, 1) 
         nn_input = np.expand_dims(nn_input, axis = 0)
+        
         return nn_input
 
     def preprocess(self, cam_img):
@@ -63,8 +61,8 @@ class FerSensor(SensorWithVisual):
         до изображения самого большого лица,
         подготовленного стать входом нейронной сети
         """
-        # Для распознавания используется самое большое лицо:
-        # предполагается, что польователь будет находиться ближе всех к камере
+        # The emotions are recognized on largest detected face.
+        # It's supposed that the user is the closest person to the camera.
         largest_face_rect = self.face_detector.detect_largest_face(cam_img)
         if largest_face_rect is None:
             self.visualization = FerSensor.get_dark_overlay(
@@ -91,10 +89,8 @@ class FerSensor(SensorWithVisual):
     def _load_nn(model_dir: str, weights_dir: str,
                  model_name: str = 'fer.json', weights_name: str = 'fer.h5'):
         """Загрузка нейронной сети, распознающей эмоции."""
-        # загрузим модель
         model = model_from_json(
             open(os.path.join(model_dir, model_name), "r").read())
-        # загрузим веса
         model.load_weights(os.path.join(model_dir, weights_dir, weights_name))
         return model
     

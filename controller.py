@@ -3,11 +3,11 @@ from cc_sender import CcSender
 
 class Controller():
     """
-    Отвечает за взаимодействие объектов наследников Resource, Sensor,
-    объектов Visualizer и cc_sender'a.
-    
-    Это именно класс, а не просто функция, потому что допускается изменение
-    набора ресурсов, сенсорорв и визуализаторов в ходе работы программы.
+    Is responsible for interaction between objects of Resource, Sensor,
+    Visualizer classes and cc_sender.
+
+    This is a class, not just a function, because it is allowed to change
+    the set of resources, sensors and visualizers during the program's work.
     """
     def __init__(self, viz_list, cc_sender: CcSender, sensors, resources, ui) -> None:
         self.viz_list = viz_list
@@ -15,7 +15,6 @@ class Controller():
         self.sensors = sensors
         self.resources = resources
         self.ui = ui
-    
     
 
     def loop(self):
@@ -28,10 +27,10 @@ class Controller():
         for sensor in self.sensors:
             raw_data = sensor.acquire_raw() 
             if raw_data is None:
-                break
+                continue
             input_data = sensor.preprocess(raw_data)
             if input_data is None:
-                break
+                continue
             results = sensor.get_results(input_data)
             self.cc_sender.send(sensor.id, results)
             self.ui._update_labels(sensor.id, results)

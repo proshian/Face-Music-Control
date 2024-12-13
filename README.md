@@ -22,7 +22,12 @@ When improvising or composing music, conventional interfaces for controlling sou
 
 ### Hardware and Software
 - A camera on your computer
-- Python 3.11.5 (other versions may work but are untested)
+- Python interpreter 
+    - versions that were tested and work: `3.10.10`, `3.11.5`
+    - versions that won't work without changes in code, model checkpoints and dependencies: 
+        - `3.12.x`, where `x` >= 8;
+        - `3.13`
+        - Actually the problem is that the highest tensorflow version supported by the project is 2.15 and python interpreter versions listed above don't support tensorflow 2.15
 - A DAW (Digital Audio Workstation)
 - Tested OS: Windows (Linux and macOS are expected to work, but were not tested)
 - A virtual MIDI port driver (**Windows-only**; see below)

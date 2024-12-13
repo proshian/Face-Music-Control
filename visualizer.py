@@ -4,7 +4,7 @@ import cv2
 from PIL import Image
 import numpy as np
 
-# Импорты ниже нудны для аннотации типов 
+# The imports below are for type hints
 from typing import Union, List
 from PyQt5.QtWidgets import QLabel
 from sensor import SensorWithVisual
@@ -16,7 +16,7 @@ class Vizualizer():
     Vizualizer принимает:
     1. Cписок source_list источников, обладающих визуализацией.
        Это те наследники Sensor и Resource, у которых есть поле visualization,
-       хранящее RGBA изобраднеие в виде np.ndarray. 
+       хранящее RGBA изображение в виде np.ndarray. 
        Визуализатор накладывает визуализации друг на друга и отображает
        конечное изображение в элементе графического интерфейса img_qlabel.
        source_list[0].vizualisation хранит самый нижний слой,
@@ -63,7 +63,6 @@ class Vizualizer():
             self._img_qlabel.width(),
             self._img_qlabel.height(),
             Qt.KeepAspectRatioByExpanding)
-            # Qt.KeepAspectRatioByExpanding)
 
         self._img_qlabel.setPixmap(qpixmap)
 

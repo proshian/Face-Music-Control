@@ -1,7 +1,6 @@
 from typing import List 
 
 import mido
-# import rtmidi
 
 # импорт ниже нужен для аннотации типов
 from sensor import Sensor
@@ -24,7 +23,7 @@ class CcSender:
              'max': sensor.max_possible} for sensor in sensors}
 
 
-    def _init_port():
+    def _init_port():  # -> mido.backends.rtmidi.Output:
         try:
             port_name = "Face Music Control"
             port = mido.open_output(port_name, virtual=True)
@@ -33,20 +32,18 @@ class CcSender:
         except NotImplementedError:
             port_names = mido.get_output_names()
             if not port_names:
-                print("No ports available! Please create " \
-                      "a virtual MIDI port and restart " \
-                      "Face Music Control.",
-                      "You may want to use LoopBe1 driver or LoopMIDI.")
+                raise RuntimeError(
+                    "No ports available! Please create a virtual MIDI port" \
+                    "and restart Face Music Control. \n" \
+                    "You may want to use LoopBe1 driver or LoopMIDI.")
             port_name = CcSender._find_existing_virt_port(port_names)
             port = mido.open_output(port_name)
-            # type(port) == mido.backends.rtmidi.Output # True
             
             print("ATTENTION! CcSender opened port"
                   f"with name: {port_name} as a default port")
             return port
     
-    def _find_existing_virt_port(port_names: List[str]):
-        
+    def _find_existing_virt_port(port_names: List[str]) -> str:
         common_port_name_fragments = ['LoopBe', 'loopMIDI']
         for port_name in port_names:
             for frag in common_port_name_fragments:
@@ -71,7 +68,7 @@ class CcSender:
     
 
     def _preprocess_el(el, min_, max_):
-        return round((el-min_) / (max_-min_) * CcSender.max_midi_cc)
+        return round((el-min_) / (max_-min_) * CcSender.MAX_MIDI_CC)
 
 
     def _preprocess_sensor_data(self, sensor_id, data):
@@ -114,4 +111,4 @@ class CcSender:
         self.port.send(message)
 
 
-    max_midi_cc = 127
+    MAX_MIDI_CC = 127

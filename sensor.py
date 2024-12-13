@@ -31,18 +31,10 @@ class Sensor(ABC):
     def get_results(self, prep_data):
         pass
 
-class SensorWithVisual(Sensor):
-    def __init__(self, names, icon_locations,
-                 resource, min_possible, max_possible):
-        super().__init__(names, icon_locations,
-                         resource, min_possible, max_possible)
-        self.visualization = None
 
-"""
 class SensorWithVisual(Sensor):
     def __init__(self, names, icon_locations,
                  resource, min_possible, max_possible):
         super().__init__(names, icon_locations,
                          resource, min_possible, max_possible)
         self.visualization = None
-"""
