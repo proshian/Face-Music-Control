@@ -57,12 +57,7 @@ https://user-images.githubusercontent.com/98213116/172071460-583846ca-99f1-4817-
 
 *Все демонстрации находятся в директории проекта: [READMEmaterials/demonstrations](READMEmaterials/demonstrations). Если видео не отобразилось, его можно найти там ([happiness-echo_anger-distortion.mp4](READMEmaterials/demonstrations/happiness-echo_anger-distortion.mp4)).*
 
-<!--
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
--->
 ## Достижения проекта
 Конкурсы:
 * Конкурс докладов бакалавров XI конгресса молодых учёных — победа в 6 номинациях:

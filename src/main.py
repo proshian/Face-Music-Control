@@ -1,18 +1,21 @@
+import os
 import sys
 from typing import List
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtGui
 
-from sensor import Sensor
-from fmc_ui import FmcUi
-from fer_sens import (
+from sensors.sensor import Sensor
+from ui.fmc_ui import FmcUi
+from sensors.fer_sens import (
     FerSensor, emotions_icons, emotions, model_dir, model_weights_dir)
 from cc_sender import CcSender
 from controller import Controller
-from fmc_resource import Resource
-from camera import Camera
-from visualizer import Vizualizer
+from resources.fmc_resource import Resource
+from resources.camera import Camera
+from visualizer import VizualizaiotnAssembler
+from partial_visualizations.fer_snes_vizualization import FerSensorPartialVizualizationCreator
+from partial_visualizations.camera_vizualization import CameraPartialVizualizationCreator
 
 
 def set_up_app() -> QApplication:
@@ -23,10 +26,8 @@ def set_up_app() -> QApplication:
 
     fmc.setStyle('Fusion')
 
-    file = open("style.qss",'r')
-
-    with file:
-        qss = file.read()
+    with open("./src/ui/style.qss",'r') as f:
+        qss = f.read()
         fmc.setStyleSheet(qss)
 
     # palette = QPalette()
@@ -50,15 +51,14 @@ def main() -> None:
     # создание окна
     view = FmcUi(sensors, cc_sender)
 
-    # Внесение элемента граф. интерфейса в качестве поля камеры. 
-    # Необходимо для масштабирования её визуализации
-    # и визуализаций, накладывающихся на нее
-    camera.set_label(view.image_label)
+    # Create partial visualizations creators
+    camera_viz_ctor = CameraPartialVizualizationCreator(camera, view.image_label)
+    fer_sens_viz_ctor = FerSensorPartialVizualizationCreator(fer_sens, camera_viz_ctor)
 
-    camera_vizualizer = Vizualizer([camera, fer_sens], view.image_label)
+    camera_sensors_vizualizer = VizualizaiotnAssembler([camera_viz_ctor, fer_sens_viz_ctor], view.image_label)
 
     controller = Controller(
-        viz_list = [camera_vizualizer], cc_sender = cc_sender, 
+        viz_list = [camera_sensors_vizualizer], cc_sender = cc_sender, 
         sensors = sensors, resources = resources, ui = view)
     
     view.set_controller(controller)

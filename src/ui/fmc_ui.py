@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIcon, QFont
 import numpy as np
 
-from shadow_button import ShadowButton
+from .shadow_button import ShadowButton
 
 
 __version__ = "0.1"
@@ -69,10 +69,10 @@ class FmcUi(QMainWindow):
     def _create_mode_buttons(self):
         self.mode_buttons_bar_color = "#293A4C"
         self.active_mode_button_back_color = "#17212B"
-        self.active_setting_mode_icon = QIcon('icons/active_settings.svg')
-        self.disabled_setting_mode_icon = QIcon('icons/disabled_settings.svg')
-        self.disabled_play_mode_icon = QIcon('icons/disabled_playmode.svg')
-        self.active_play_mode_icon = QIcon('icons/active_playmode.svg')
+        self.active_setting_mode_icon = QIcon('assets/icons/active_settings.svg')
+        self.disabled_setting_mode_icon = QIcon('assets/icons/disabled_settings.svg')
+        self.disabled_play_mode_icon = QIcon('assets/icons/disabled_playmode.svg')
+        self.active_play_mode_icon = QIcon('assets/icons/active_playmode.svg')
 
         self.play_button = SwitchButton()
         self.play_button.setIconSize(QSize(50, 60))

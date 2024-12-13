@@ -5,11 +5,6 @@
 Face Music Control is a Python application for controlling the sound of a musical instrument via emotion recognition. It uses a virtual MIDI port to send MIDI CC Messages of amplitudes proportional to the probabilities of emotions recognised by a convolutional neural network based on facial expression. To control DAW parameters, we usually move sliders of a MIDI controller. Face Music Control's approach is similar, except the MIDI controller is virtual, operated by a neural network.
 
 
-> [!Note]
-> This program functions as intended. However, it is an older project, and while I recently (December 2024) performed an update to ensure it still works, I am not fully satisfied with the code quality. It does not reflect my current coding standards or practices. I am sharing this project to showcase its functionality, but please keep in mind that it is a legacy project.
-
-
-
 ## Motivation
 When improvising or composing music, conventional interfaces for controlling sound (pedals, sliders, etc.) are inconvenient and rarely applicable. During the process of music creation, musicians often lack the focus needed to search for the right tone and adjust the sound parameters of their instrument. However, in these contexts, it is particularly important for the character of the sound to align with the musician's emotional state. I could not find any existing solutions for controlling an instrument's sound based on the musician's emotions. Therefore, I created this program.
 
@@ -22,7 +17,11 @@ When improvising or composing music, conventional interfaces for controlling sou
 
 ### Hardware and Software
 - A camera on your computer
-- Python 3.11.5 (other versions may work but are untested)
+- Python interpreter 
+    - Tested and supported versions: 3.10.10, 3.11.5.
+    - Incompatible Versions:
+        - 3.12.x (where x >= 8) and 3.13 are not supported due to TensorFlow compatibility issues.
+        - The highest TensorFlow version supported by this project is 2.15, which these Python versions do not support.
 - A DAW (Digital Audio Workstation)
 - Tested OS: Windows (Linux and macOS are expected to work, but were not tested)
 - A virtual MIDI port driver (**Windows-only**; see below)
