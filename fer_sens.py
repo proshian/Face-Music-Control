@@ -4,14 +4,13 @@ from typing import List, Tuple
 import cv2
 from tensorflow.keras.models import model_from_json 
 import numpy as np
-from PIL import Image, ImageFont, ImageDraw
 
-from sensor import SensorWithVisual
+from sensor import Sensor
 from camera import Camera
 from face_detector import face_detector
 
 
-class FerSensor(SensorWithVisual):
+class FerSensor(Sensor):
     """
     Метод get_results возвращает массив вероятностей семи эмоций,
     названия которых представлены в поле names
@@ -27,32 +26,26 @@ class FerSensor(SensorWithVisual):
         self._model = FerSensor._load_nn(
             model_dir, weights_dir, model_name, weights_name)
         self.face_detector = face_detector
-        self._face_coords = None
-
-        # В случае FerSensor visualization - это квадратик вокруг лица
-        # и прямоугольник с подписью наиболее вероятной эмоции над ним.
-        self.visualization = FerSensor.get_dark_overlay(
-            self.resource.get_viz_shape()[::-1])
-
-    def get_results(self, input) -> List[float]:
-        results = self._model.predict(input)[0]
-        self.visualize_prediction(results)
-        return results
+        self.cur_largest_face_rect = None
+        self.cur_results = None
+        
+    def get_results_from_raw(self, raw_data):
+        nn_input = self.preprocess(raw_data)
+        if nn_input is None:
+            self.cur_results = None
+        else:
+            self.cur_results = self._model.predict(nn_input)[0]
+        return self.cur_results
 
     def face_img_to_nn_input(face_img: np.ndarray) -> List[float]:
         """
         Подготовка изображения лица к формату входных данных нейронной сети
         """
         gray_face_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
-        
         gray_face_48 = cv2.resize(gray_face_img,(48,48))
-
         gray_face_48_normed = gray_face_48 / 255
-
-        # Add dimensions for channels and batch size (1, 48, 48, 1)
-        nn_input = np.expand_dims(gray_face_48_normed, axis = 2)
-        nn_input = np.expand_dims(nn_input, axis = 0)
-        
+        # Add dimensions for channels and batch size (1, 48, 48, 1).
+        nn_input = np.expand_dims(gray_face_48_normed, axis = (0, 3))        
         return nn_input
 
     def preprocess(self, cam_img):
@@ -65,25 +58,12 @@ class FerSensor(SensorWithVisual):
         # It's supposed that the user is the closest person to the camera.
         largest_face_rect = self.face_detector.detect_largest_face(cam_img)
         if largest_face_rect is None:
-            self.visualization = FerSensor.get_dark_overlay(
-                self.resource.get_viz_shape()[::-1])    
+            self.cur_largest_face_rect = None
             return None
 
-        (x,y,w,h) = self._face_coords = largest_face_rect 
-
-        viz_w, viz_h = self.resource.get_viz_shape()
-        # ! Здесь логичнее было бы оперировать НЕскалированными размерами
-        s_x, s_y, s_w, s_h = [
-            round(coord * self.resource._scaling_factor)
-            for coord in largest_face_rect]
-        
+        (x,y,w,h) = self.cur_largest_face_rect = largest_face_rect 
         face_img = cam_img[y:y+h, x:x+w]
-
         nn_input = FerSensor.face_img_to_nn_input(face_img)
-
-        self.init_viz_with_detection(
-            self.resource.get_viz_shape()[::-1], largest_face_rect)  
-
         return nn_input
     
     def _load_nn(model_dir: str, weights_dir: str,
@@ -93,105 +73,7 @@ class FerSensor(SensorWithVisual):
             open(os.path.join(model_dir, model_name), "r").read())
         model.load_weights(os.path.join(model_dir, weights_dir, weights_name))
         return model
-    
-
-    def get_dark_overlay(img_height_and_width: Tuple[int],
-                         rgba_color: Tuple[int] = None) -> np.ndarray:
-        """
-        Получение RGBA изображения размером img_height_and_width
-        в виде np.ndarray с затемнением цвета rgba_color.
-        """
-        if rgba_color is None:
-            rgba_color = FerSensor.vis_colors['dark_overlay']
-        rgba_layers = []
-        for channel_val in rgba_color:
-            rgba_layers.append(
-                np.full(img_height_and_width, channel_val, dtype=np.uint8))
-        dark_overlay = np.dstack(rgba_layers)
-        return dark_overlay 
-
-    def init_viz_with_detection(self, img_height_and_width, face_coords):
-        """
-        Инициализация визуализации в виде добавления рамочки вокруг лица,
-        поля для текста над рамочкой и затеменения всего вне рамочки.
-        """
-        visualisation = FerSensor.get_dark_overlay(img_height_and_width)
-
-        # print(f"{img_height_and_width =}")
-        # print(f"{(self.resource.img_label.width(), self.resource.img_label.height()) = }")
-        # print(f"{self.resource._scaling_factor = }")
-
-        # (x,y,w,h) = face_coords
-
-        s_x, s_y, s_w, s_h = [
-            round(coord * self.resource._scaling_factor)
-            for coord in face_coords]
-
-        # print(f"{face_coords = }")      
-        # print(f"{visualisation[s_y:s_y+s_h, s_x:s_x+s_w, 3].shape }"")
-
-        # Сделаем участок с лицом прозрачным
-        visualisation[s_y:s_y+s_h, s_x:s_x+s_w, 3] = np.zeros(
-            (s_h, s_w), dtype=np.uint8)
-
-        # Добавим рамку вокруг лица
-        cv2.rectangle(
-            visualisation, (s_x,s_y), (s_x+s_w,s_y+s_h),
-            self.vis_colors['frame'], thickness=4)
-
-        # создадим заливку рамки для текста
-        cv2.rectangle(
-            visualisation, (s_x,s_y),
-            (s_x + s_w,
-                s_y - self.FONT_HEIGHT - self.FONT_PADDING_VERTICAL*2),
-            self.vis_colors['frame'], thickness=-1,)
-        
-        # создадим контур рамки для текста
-        cv2.rectangle(
-            visualisation, (s_x,s_y),
-            (s_x + s_w,
-                s_y - self.FONT_HEIGHT - self.FONT_PADDING_VERTICAL*2),
-            self.vis_colors['frame'], thickness=4,)
-
-        self.visualization = visualisation
-
-
-    def visualize_prediction(self, results):
-        """
-        Добавление в поле для текста на визуализации текста
-        с наиболее вероятной эмоцией и ее вероятностью.
-        """
-        s_x, s_y = [
-            round(coord * self.resource._scaling_factor)
-            for coord in self._face_coords[:2]]
-
-        max_index = np.argmax(results)  # номер наиболее вероятной эмоции
-    
-        predicted_emotion = self.names[max_index]  # наиболее вероятная эмоция 
-        font = ImageFont.truetype("arial.ttf", self.FONT_HEIGHT)
-        img_pil = Image.fromarray(self.visualization)
-        draw = ImageDraw.Draw(img_pil)
-        text_coords = (
-            int(s_x + self.FONT_PADDING_HORIZONTAL),
-            int(s_y - self.FONT_HEIGHT - self.FONT_PADDING_VERTICAL))
-        draw.text(
-            text_coords,
-            f"{predicted_emotion}  {results[max_index]*100:.0f}%",
-            font = font, fill = self.vis_colors['text'])
-        self.visualization = np.array(img_pil)
-        # cv2.imshow('window_name', self.visualization)
-
-
-    vis_colors = {
-        'dark_overlay': (19, 20, 22, 91),
-        'frame': (23, 33, 43, 255),
-        'text': (255, 255, 255, 255)}
-    
-    # Параметры текста с наиболее веротяной эмоцией, помещаемого над лицом.
-    FONT_HEIGHT = 20
-    FONT_PADDING_VERTICAL = 3
-    FONT_PADDING_HORIZONTAL = 10
-
+  
 
 icons_dir = 'icons/emojis/'
 
