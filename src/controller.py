@@ -1,5 +1,10 @@
-from cc_sender import CcSender
+from typing import List
 
+from cc_sender import CcSender
+from visualizer import VisualizaiotnAssembler
+from sensors.sensor import Sensor
+from resources.fmc_resource import Resource
+from ui.fmc_ui import FmcUi
 
 class Controller():
     """
@@ -9,7 +14,12 @@ class Controller():
     This is a class, not just a function, because it is allowed to change
     the set of resources, sensors and visualizers during the program's work.
     """
-    def __init__(self, viz_list, cc_sender: CcSender, sensors, resources, ui) -> None:
+    def __init__(self, 
+                 viz_list: List[VisualizaiotnAssembler], 
+                 cc_sender: CcSender, 
+                 sensors: List[Sensor], 
+                 resources: List[Resource], 
+                 ui: FmcUi) -> None:
         self.viz_list = viz_list
         self.cc_sender = cc_sender
         self.sensors = sensors

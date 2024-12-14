@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
-class PartialVizualizationCreator(ABC):
-
+class PartialVisualizationCreator(ABC):
     @abstractmethod
     def get_vizualization(self):
         pass

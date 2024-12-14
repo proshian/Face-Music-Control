@@ -91,4 +91,4 @@ class HaarFaceDetector(FaceDetector):
 
 
 # Данный объект будет внедряться во все sensor'ы, где требуется детекция лиц
-face_detector = HaarFaceDetector()
+face_detector = MpFaceDetector()
