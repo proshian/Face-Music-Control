@@ -7,25 +7,25 @@ import numpy as np
 # The imports below are for type hints
 from typing import List
 from PyQt5.QtWidgets import QLabel
-from partial_visualizations.partial_vizualization_creator import PartialVizualizationCreator
+from partial_visualizations.partial_vizualization_creator import PartialVisualizationCreator
 
 
-class VizualizaiotnAssembler():
+class VisualizaiotnAssembler():
     """
-    VizualizaiotnAssembler принимает:
+    VisualizaiotnAssembler принимает:
     1. Cписок source_list источников, обладающих визуализацией.
-       Это объекты PartialVizualizationCreator, у которых можно получить
+       Это объекты PartialVisualizationCreator, у которых можно получить
        RGBA изображение в виде np.ndarray. 
        Визуализатор накладывает визуализации друг на друга и отображает
        конечное изображение в элементе графического интерфейса img_qlabel.
        source_list[0].vizualisation хранит самый нижний слой,
        source_list[-1].vizualisation — самый верхний слой
     
-    2. QLabel img_qlabel, в котором VizualizaiotnAssembler отрисовывает изображение,
+    2. QLabel img_qlabel, в котором VisualizaiotnAssembler отрисовывает изображение,
        полученное альфа-композицией визуализаций источников.  
     """
     def __init__(self, 
-                 source_list: List[PartialVizualizationCreator],
+                 source_list: List[PartialVisualizationCreator],
                  img_qlabel: QLabel) -> None:
         self._img_qlabel = img_qlabel
         self._source_list = source_list
@@ -50,14 +50,14 @@ class VizualizaiotnAssembler():
     def _gather_visualization(self):
         visualization = self._source_list[0].get_vizualization()
         for source in self._source_list[1:]:
-            visualization = VizualizaiotnAssembler.alpha_compose(
+            visualization = VisualizaiotnAssembler.alpha_compose(
                 visualization, source.get_vizualization())
         return visualization
     
     def visualize(self):
         visualization = self._gather_visualization()
         visualization = cv2.cvtColor(visualization, cv2.COLOR_RGBA2RGB)
-        qpixmap = VizualizaiotnAssembler._np_RGB_to_QPixmap(visualization)
+        qpixmap = VisualizaiotnAssembler._np_RGB_to_QPixmap(visualization)
         qpixmap = qpixmap.scaled(
             self._img_qlabel.width(),
             self._img_qlabel.height(),

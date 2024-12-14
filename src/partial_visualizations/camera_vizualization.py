@@ -4,9 +4,9 @@ import cv2
 from PyQt5.QtWidgets import QLabel
 
 from resources.camera import Camera
-from .partial_vizualization_creator import PartialVizualizationCreator
+from .partial_vizualization_creator import PartialVisualizationCreator
 
-class CameraPartialVizualizationCreator(PartialVizualizationCreator):
+class CameraPartialVisualizationCreator(PartialVisualizationCreator):
     def __init__(self, camera: Camera, img_label: QLabel) -> None:
         self.camera = camera
         self.img_label = img_label

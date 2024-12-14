@@ -4,30 +4,30 @@ import cv2
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 
-from .camera_vizualization import CameraPartialVizualizationCreator
+from .camera_vizualization import CameraPartialVisualizationCreator
 from sensors.fer_sens import FerSensor
-from .partial_vizualization_creator import PartialVizualizationCreator
+from .partial_vizualization_creator import PartialVisualizationCreator
 
 
 
-class FerSensorPartialVizualizationCreator(PartialVizualizationCreator):
+class FerSensorPartialVisualizationCreator(PartialVisualizationCreator):
     """
     Метод get_results возвращает массив вероятностей семи эмоций,
     названия которых представлены в поле names
     """
-    def __init__(self, fer_sensor: FerSensor, camera_vizalization: CameraPartialVizualizationCreator) -> None:
+    def __init__(self, fer_sensor: FerSensor, camera_vizalization: CameraPartialVisualizationCreator) -> None:
 
         # В случае FerSensor visualization - это квадратик вокруг лица
         # и прямоугольник с подписью наиболее вероятной эмоции над ним.
         self.fer_sensor = fer_sensor
         self.camera_vizalization = camera_vizalization
-        self.visualization = FerSensorPartialVizualizationCreator.get_dark_overlay(
+        self.visualization = FerSensorPartialVisualizationCreator.get_dark_overlay(
             self.camera_vizalization.get_viz_shape()[::-1])
 
 
     def get_vizualization(self):
         if self.fer_sensor.cur_results is None or self.fer_sensor.cur_largest_face_rect is None:
-            self.visualization = FerSensorPartialVizualizationCreator.get_dark_overlay(
+            self.visualization = FerSensorPartialVisualizationCreator.get_dark_overlay(
                 self.camera_vizalization.get_viz_shape()[::-1])
             return self.visualization
         largest_face_bounding_box = self.fer_sensor.cur_largest_face_rect
@@ -44,7 +44,7 @@ class FerSensorPartialVizualizationCreator(PartialVizualizationCreator):
         в виде np.ndarray с затемнением цвета rgba_color.
         """
         if rgba_color is None:
-            rgba_color = FerSensorPartialVizualizationCreator.vis_colors['dark_overlay']
+            rgba_color = FerSensorPartialVisualizationCreator.vis_colors['dark_overlay']
         rgba_layers = []
         for channel_val in rgba_color:
             rgba_layers.append(
@@ -59,7 +59,7 @@ class FerSensorPartialVizualizationCreator(PartialVizualizationCreator):
         поля для текста над рамочкой и затеменения всего вне рамочки.
         Внутренность рамочки прозрачная.
         """
-        visualisation = FerSensorPartialVizualizationCreator.get_dark_overlay(img_height_and_width)
+        visualisation = FerSensorPartialVisualizationCreator.get_dark_overlay(img_height_and_width)
 
         s_x, s_y, s_w, s_h = [
             round(coord * self.camera_vizalization._scaling_factor)

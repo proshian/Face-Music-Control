@@ -13,9 +13,9 @@ from cc_sender import CcSender
 from controller import Controller
 from resources.fmc_resource import Resource
 from resources.camera import Camera
-from visualizer import VizualizaiotnAssembler
-from partial_visualizations.fer_snes_vizualization import FerSensorPartialVizualizationCreator
-from partial_visualizations.camera_vizualization import CameraPartialVizualizationCreator
+from visualizer import VisualizaiotnAssembler
+from partial_visualizations.fer_snes_vizualization import FerSensorPartialVisualizationCreator
+from partial_visualizations.camera_vizualization import CameraPartialVisualizationCreator
 
 
 def set_up_app() -> QApplication:
@@ -52,10 +52,10 @@ def main() -> None:
     view = FmcUi(sensors, cc_sender)
 
     # Create partial visualizations creators
-    camera_viz_ctor = CameraPartialVizualizationCreator(camera, view.image_label)
-    fer_sens_viz_ctor = FerSensorPartialVizualizationCreator(fer_sens, camera_viz_ctor)
+    camera_viz_ctor = CameraPartialVisualizationCreator(camera, view.image_label)
+    fer_sens_viz_ctor = FerSensorPartialVisualizationCreator(fer_sens, camera_viz_ctor)
 
-    camera_sensors_vizualizer = VizualizaiotnAssembler([camera_viz_ctor, fer_sens_viz_ctor], view.image_label)
+    camera_sensors_vizualizer = VisualizaiotnAssembler([camera_viz_ctor, fer_sens_viz_ctor], view.image_label)
 
     controller = Controller(
         viz_list = [camera_sensors_vizualizer], cc_sender = cc_sender, 
